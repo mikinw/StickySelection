@@ -108,6 +108,15 @@
           <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F10" second-keystroke="6"/>
       </action>
 
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo7Action" class="com.mnw.stickyselection.actions.PaintSelectionTo7Action"
+              text="Paint Selection to #7" description="Paint Selection to #7">
+          <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F9" second-keystroke="7"/>
+      </action>
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup7Action" class="com.mnw.stickyselection.actions.ClearPaintGroup7Action"
+              text="Clear #7 Group" description="Clear #7 Selection Group">
+          <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F10" second-keystroke="7"/>
+      </action>
+
       <group>
           <separator/>
           <group id="StickyHighlight.Menu" text="StickyHighlight" popup="true">

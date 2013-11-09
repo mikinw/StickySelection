@@ -75,7 +75,7 @@ public class StickySelectionEditorComponent {
         int offset = 0;
         System.out.println(selectedText);
         while ((index = wholeText.indexOf(selectedText, offset)) > -1) {
-            System.out.println("select: index=" + index + " offset=" + offset);
+//            System.out.println("select: index=" + index + " offset=" + offset);
             selectedMatchStart.add(index);
             offset = index + 1;
         }

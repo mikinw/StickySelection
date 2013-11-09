@@ -11,13 +11,12 @@ import com.mnw.stickyselection.StickySelectionAppComponent;
 /**
  * TODO description of this class is missing
  */
-public class PaintSelectionTo6Action extends AnAction {
+public class PaintSelectionTo7Action extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent actionEvent) {
         Editor editor = actionEvent.getData(PlatformDataKeys.EDITOR);
         Application application = ApplicationManager.getApplication();
         StickySelectionAppComponent identHighlightComp = application.getComponent(StickySelectionAppComponent.class);
-        identHighlightComp.paintSelection(editor, 6);
+        identHighlightComp.paintSelection(editor, 7);
     }
-
 }

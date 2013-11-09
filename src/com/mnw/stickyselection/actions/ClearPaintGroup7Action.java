@@ -17,6 +17,6 @@ public class ClearPaintGroup7Action extends AnAction {
         Editor editor = actionEvent.getData(PlatformDataKeys.EDITOR);
         Application application = ApplicationManager.getApplication();
         StickySelectionAppComponent identHighlightComp = application.getComponent(StickySelectionAppComponent.class);
-        identHighlightComp.clearPaintGroup(editor, 0);
+        identHighlightComp.clearPaintGroup(editor, 7);
     }
 }
