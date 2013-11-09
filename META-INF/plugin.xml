@@ -1,0 +1,78 @@
+<idea-plugin version="2">
+  <id>com.yourcompany.unique.plugin.id</id>
+  <name>Sticky Highlight</name>
+  <version>1.0</version>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+  <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <small>most HTML tags may be used</small>
+      ]]></description>
+
+  <change-notes><![CDATA[
+      Add change notes here.<br>
+      <small>most HTML tags may be used</small>
+      ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="107.105"/>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <application-components>
+    <!-- Add your application components here -->
+      <component>
+          <implementation-class>com.mnw.stickyhighlight.StickyHighlightAppComponent</implementation-class>
+      </component>
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+      <group id="MyPlugin.SampleMenu" text="_Sample Menu" description="Sample menu">
+          <add-to-group group-id="MainMenu" anchor="last"  />
+          <action id="Myplugin.Textboxes" class="com.mnw.stickyhighlight.TextBoxes" text="Text _Boxes" description="A test menu item" />
+      </group>
+
+
+      <action id="com.mnw.stickyhighlight.actions.LockIdentifiersAction" class="com.mnw.stickyhighlight.actions.LockIdentifiersAction" text="lock"
+              description="asg description">
+          <keyboard-shortcut keymap="$default" first-keystroke="ctrl meta alt F11"/>
+      </action>
+      <action id="com.mnw.stickyhighlight.actions.UnlockIdentifiersAction" class="com.mnw.stickyhighlight.actions.UnlockIdentifiersAction" text="unlock"
+              description="unlock description">
+          <keyboard-shortcut keymap="$default" first-keystroke="ctrl meta alt F12"/>
+      </action>
+      <action id="com.mnw.stickyhighlight.actions.PaintSelectionTo0Action" class="com.mnw.stickyhighlight.actions.PaintSelectionTo0Action" text="paint 1. selection"
+              description="paint selection">
+          <keyboard-shortcut keymap="$default" first-keystroke="ctrl meta alt F9" second-keystroke="1"/>
+      </action>
+      <action id="com.mnw.stickyhighlight.actions.ClearPaintGroup0Action" class="com.mnw.stickyhighlight.actions.ClearPaintGroup0Action" text="clear 1. selection"
+              description="clear selection">
+          <keyboard-shortcut keymap="$default" first-keystroke="ctrl meta alt F10" second-keystroke="1"/>
+      </action>
+
+      <group>
+          <separator/>
+          <group id="MyPlugin.Menu" text="StickyHighlight" popup="true">
+              <reference id="com.mnw.stickyhighlight.actions.LockIdentifiersAction" />
+              <reference id="com.mnw.stickyhighlight.actions.UnlockIdentifiersAction" />
+              <reference id="com.mnw.stickyhighlight.actions.PaintSelectionTo0Action" />
+              <reference id="com.mnw.stickyhighlight.actions.ClearPaintGroup0Action" />
+          </group>
+          <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+      </group>
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+</idea-plugin>
