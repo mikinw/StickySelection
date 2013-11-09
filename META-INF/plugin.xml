@@ -1,8 +1,8 @@
 <idea-plugin version="2">
   <id>com.mnw.stickyselection</id>
   <name>Sticky Selection</name>
-  <version>1.1</version>
-  <vendor email="mikinw@sch.bme.hu" url="http://mikinw.blogspot.co.uk">MikiNW</vendor>
+  <version>1.2</version>
+  <vendor email="mikinw.development@gmail.com" url="http://mikinw.blogspot.co.uk">MikiNW</vendor>
 
   <description><![CDATA[
       You can mark a selection to be permanent, and so when you move the caret away, the selection will remain highlighted.
