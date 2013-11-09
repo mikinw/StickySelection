@@ -2,7 +2,7 @@
   <id>com.mnw.stickyselection</id>
   <name>Sticky Selection</name>
   <version>1.0</version>
-  <vendor email="mikinw@sch.bme.hu" url="http://www.yourcompany.com">MikiNW</vendor>
+  <vendor email="mikinw@sch.bme.hu" url="http://mikinw.blogspot.co.uk">MikiNW</vendor>
 
   <description><![CDATA[
       You can mark a selection to be permanent, and so when you move the caret away, the selection will remain highlighted.
@@ -12,6 +12,12 @@
       <li>You can set a marker to be visible on the right side of the editor
       <li>You can add multiple selections to the same group
       </ul>
+
+      Default shortcuts
+      <ul>
+      <li>Press <em>Ctrl + Alt + F9</em> than a number (0..7) to paint a selection.
+      <li>Press <em>Ctrl + Alt + F10</em> than a number (0..7) to clear a selection.
+      <li>Press <em>Ctrl + Alt + F10</em> than <em>F10</em> to clear all selections.
       ]]></description>
 
   <change-notes><![CDATA[
