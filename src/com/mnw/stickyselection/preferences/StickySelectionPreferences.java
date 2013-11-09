@@ -73,8 +73,7 @@ public class StickySelectionPreferences {
         checkBoxesMarkers = new JCheckBox[NUMBER_OF_SELECTION_GROUPS];
 
         setupUI();
-        defaultValues = new DefaultValues()
-        ;
+        defaultValues = new DefaultValues();
         buttonSetSelectionGroup0Color
                 .addActionListener(new PreferencesSetColorActionListener("Selection Group #0 Color"));
         buttonSetSelectionGroup1Color
@@ -95,49 +94,49 @@ public class StickySelectionPreferences {
         buttonResetSelectionGroup0.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(1);
+                resetSelectionGroupToDefault(0);
             }
         });
         buttonResetSelectionGroup1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(2);
+                resetSelectionGroupToDefault(1);
             }
         });
         buttonResetSelectionGroup2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(3);
+                resetSelectionGroupToDefault(2);
             }
         });
         buttonResetSelectionGroup3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(4);
+                resetSelectionGroupToDefault(3);
             }
         });
         buttonResetSelectionGroup4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(5);
+                resetSelectionGroupToDefault(4);
             }
         });
         buttonResetSelectionGroup5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(6);
+                resetSelectionGroupToDefault(5);
             }
         });
         buttonResetSelectionGroup6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(7);
+                resetSelectionGroupToDefault(6);
             }
         });
         buttonResetSelectionGroup7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                resetSelectionGroupToDefault(8);
+                resetSelectionGroupToDefault(7);
             }
         });
 
