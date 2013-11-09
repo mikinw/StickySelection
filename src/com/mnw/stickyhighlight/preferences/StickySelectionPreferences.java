@@ -232,54 +232,6 @@ public class StickySelectionPreferences {
         return ret;
     }
 
-/*
-
-    protected Color getColorFromColorButton(JButton b) {
-        ImageIcon ii = (ImageIcon) b.getIcon();
-        ColorImage ci = (ColorImage) ii.getImage();
-        return (ci.getColor());
-    }
-
-    protected String getStringFromColorButton(JButton b) {
-        Color c = getColorFromColorButton(b);
-        return (getStringFromColor(c));
-    }
-
-    protected void setColorToColorButton(JButton b, Color c) {
-        b.setIcon(new ImageIcon(new ColorImage(PREFERRED_WIDTH, PREFERRED_HEIGHT, c)));
-    }
-
-    protected void setStringToColorButton(JButton b, String s) {
-        Color c = getColorFromString(s);
-        setColorToColorButton(b, c);
-    }
-
-    public static String getStringFromColor(Color c) {
-        return ("" + c.getRed() + "," + c.getGreen() + "," + c.getBlue());
-    }
-
-    public static Color getColorFromString(String s) {
-        StringTokenizer tokens = new StringTokenizer(s, ",");
-        if (tokens.countTokens() == 3) {
-            String redToken = tokens.nextToken();
-            String greenToken = tokens.nextToken();
-            String blueToken = tokens.nextToken();
-            try {
-                int red = Integer.parseInt(redToken);
-                int green = Integer.parseInt(greenToken);
-                int blue = Integer.parseInt(blueToken);
-                if ((red >= 0) && (red <= 255) && (green >= 0) && (green <= 255) && (blue >= 0) && (blue <= 255)) {
-                    Color retVal = new Color(red, green, blue);
-                    return (retVal);
-                }
-            } catch (NumberFormatException nfe) {
-                //Ignore
-            }
-        }
-        return (null);
-    }
-
-*/
     // region Create UI
 
 
@@ -471,10 +423,10 @@ public class StickySelectionPreferences {
                                                     new Insets(0, 0, 0, 0),
                                                     0,
                                                     0));
-        checkBoxPluginEnabled = new JCheckBox();
-        checkBoxPluginEnabled.setSelected(true);
-        checkBoxPluginEnabled.setText("Plugin Enabled");
-        mainPanel.add(checkBoxPluginEnabled, BorderLayout.NORTH);
+//        checkBoxPluginEnabled = new JCheckBox();
+//        checkBoxPluginEnabled.setSelected(true);
+//        checkBoxPluginEnabled.setText("Plugin Enabled");
+//        mainPanel.add(checkBoxPluginEnabled, BorderLayout.NORTH);
     }
 
     private void addResetButtonToPanelAt(int x, int y, JButton resetButton) {
@@ -573,6 +525,4 @@ public class StickySelectionPreferences {
 
     // endregion Create UI
 
-//    /** @noinspection ALL */
-//    public JComponent $$$getRootComponent$$$() { return mainPanel; }
 }

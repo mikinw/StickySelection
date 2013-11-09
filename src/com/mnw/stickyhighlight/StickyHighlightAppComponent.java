@@ -25,12 +25,7 @@ import java.util.HashMap;
  */
 public class StickyHighlightAppComponent implements ApplicationComponent, EditorFactoryListener, Configurable {
 
-    public static final String DEFAULT_HIGHLIGHT_LAYER = "ADDITIONAL_SYNTAX";
-
-
     protected HashMap<Editor, StickyHighlightEditorComponent> editors = null;
-
-    public String highlightLayer = DEFAULT_HIGHLIGHT_LAYER;
 
     private StickySelectionPreferences form;
 
@@ -83,20 +78,6 @@ public class StickyHighlightAppComponent implements ApplicationComponent, Editor
         }
 
         editorHighlighter.dispose();
-    }
-
-/*
-    public void lockIdentifiers(Editor editor) {
-
-        StickyHighlightEditorComponent editorHighlighter = editors.get(editor);
-        if(editorHighlighter == null)
-            return;
-        editorHighlighter.lockIdentifiers();
-    }
-*/
-
-    public String getHighlightLayer() {
-        return highlightLayer;
     }
 
     public void paintSelection(Editor editor, int paintGroup) {
