@@ -60,8 +60,6 @@ public class StickySelectionPreferences {
     private JButton buttonResetSelectionGroup6;
     private JButton buttonResetSelectionGroup7;
 
-    private JCheckBox checkBoxPluginEnabled;
-
     private JPanel panelColorScheme;
 
 
@@ -143,11 +141,6 @@ public class StickySelectionPreferences {
             }
         });
 
-        checkBoxPluginEnabled.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                updatePluginEnabled();
-            }
-        });
     }
 
     private void resetSelectionGroupToDefault(int groupNumber) {
@@ -159,21 +152,6 @@ public class StickySelectionPreferences {
         textFieldsLayers[groupNumber].setText(String.valueOf(repository.getHighlightLayerOfSelectionGroup(groupNumber)));
     }
 
-    protected void updatePluginEnabled() {
-        setHierarchyEnabled(panelColorScheme, checkBoxPluginEnabled.isSelected());
-    }
-
-    protected void setHierarchyEnabled(Component comp, boolean enabled) {
-        comp.setEnabled(enabled);
-        Component children[] = new Component[0];
-        if (comp instanceof Container) {
-            children = ((Container) comp).getComponents();
-        }
-        for (Component child : children) {
-            setHierarchyEnabled(child, enabled);
-        }
-    }
-
     public JPanel getMainPanel() {
         return mainPanel;
     }
@@ -183,8 +161,6 @@ public class StickySelectionPreferences {
         for (int i = 0; i < NUMBER_OF_SELECTION_GROUPS; i++) {
             setDataForSelectionGroupFrom(savedValues, i);
         }
-        checkBoxPluginEnabled.setSelected(savedValues.isPluginEnabled());
-        updatePluginEnabled();
     }
 
     public boolean isModified() {
@@ -227,7 +203,6 @@ public class StickySelectionPreferences {
             ret.setHighlightLayerOfSelectionGroup(i, highlightLayer);
             ret.setIsMarkerEnabledForSelectionGroup(i, checkBoxesMarkers[i].isSelected());
         }
-        ret.setIsPluginEnabled(checkBoxPluginEnabled.isEnabled());
 
         return ret;
     }
@@ -423,10 +398,6 @@ public class StickySelectionPreferences {
                                                     new Insets(0, 0, 0, 0),
                                                     0,
                                                     0));
-//        checkBoxPluginEnabled = new JCheckBox();
-//        checkBoxPluginEnabled.setSelected(true);
-//        checkBoxPluginEnabled.setText("Plugin Enabled");
-//        mainPanel.add(checkBoxPluginEnabled, BorderLayout.NORTH);
     }
 
     private void addResetButtonToPanelAt(int x, int y, JButton resetButton) {
