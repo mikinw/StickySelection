@@ -1,7 +1,7 @@
 Sticky Selection
 ================
 
-[IntelliJ Idea plugin](plugins.jetbrains.com/plugin/7341) with which you can permanently highlight any selection. 
+[IntelliJ Idea plugin](http://plugins.jetbrains.com/plugin/7341) with which you can permanently highlight any selection. 
 Similar to the Notepad++ feature, where you can "paint selection".
 
 
