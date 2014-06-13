@@ -157,6 +157,7 @@
               <separator/>
               <reference id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" />
           </group>
+          <separator/>
           <add-to-group group-id="EditorPopupMenu" anchor="last"/>
       </group>
   </actions>
