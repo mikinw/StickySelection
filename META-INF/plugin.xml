@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.mnw.stickyselection</id>
   <name>Sticky Selection</name>
-  <version>1.2</version>
+  <version>1.3</version>
   <vendor email="mikinw.development@gmail.com" url="http://mikinw.blogspot.co.uk">MikiNW</vendor>
 
   <description><![CDATA[
@@ -21,6 +21,7 @@
       ]]></description>
 
   <change-notes><![CDATA[
+      v1.3 added icons to context menu<br>
       v1.0 this is the first release<br>
       ]]>
   </change-notes>
@@ -55,87 +56,87 @@
 -->
 
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo0Action" class="com.mnw.stickyselection.actions.PaintSelectionTo0Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo0Action" class="com.mnw.stickyselection.actions.PaintSelectionTo0Action" icon="icons/color0.png"
               text="Paint Selection to #0" description="Paint Selection to #0">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="0"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup0Action" class="com.mnw.stickyselection.actions.ClearPaintGroup0Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup0Action" class="com.mnw.stickyselection.actions.ClearPaintGroup0Action" icon="icons/color0.png"
               text="Clear #0 Group" description="Clear #0 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="0"/>
       </action>
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo1Action" class="com.mnw.stickyselection.actions.PaintSelectionTo1Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo1Action" class="com.mnw.stickyselection.actions.PaintSelectionTo1Action" icon="icons/color1.png"
               text="Paint Selection to #1" description="Paint Selection to #1">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="1"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup1Action" class="com.mnw.stickyselection.actions.ClearPaintGroup1Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup1Action" class="com.mnw.stickyselection.actions.ClearPaintGroup1Action" icon="icons/color1.png"
               text="Clear #1 Group" description="Clear #1 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="1"/>
       </action>
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo2Action" class="com.mnw.stickyselection.actions.PaintSelectionTo2Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo2Action" class="com.mnw.stickyselection.actions.PaintSelectionTo2Action" icon="icons/color2.png"
               text="Paint Selection to #2" description="Paint Selection to #2">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="2"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup2Action" class="com.mnw.stickyselection.actions.ClearPaintGroup2Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup2Action" class="com.mnw.stickyselection.actions.ClearPaintGroup2Action" icon="icons/color2.png"
               text="Clear #2 Group" description="Clear #2 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="2"/>
       </action>
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo3Action" class="com.mnw.stickyselection.actions.PaintSelectionTo3Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo3Action" class="com.mnw.stickyselection.actions.PaintSelectionTo3Action" icon="icons/color3.png"
               text="Paint Selection to #3" description="Paint Selection to #3">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="3"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup3Action" class="com.mnw.stickyselection.actions.ClearPaintGroup3Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup3Action" class="com.mnw.stickyselection.actions.ClearPaintGroup3Action" icon="icons/color3.png"
               text="Clear #3 Group" description="Clear #3 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="3"/>
       </action>
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo4Action" class="com.mnw.stickyselection.actions.PaintSelectionTo4Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo4Action" class="com.mnw.stickyselection.actions.PaintSelectionTo4Action" icon="icons/color4.png"
               text="Paint Selection to #4" description="Paint Selection to #4">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="4"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup4Action" class="com.mnw.stickyselection.actions.ClearPaintGroup4Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup4Action" class="com.mnw.stickyselection.actions.ClearPaintGroup4Action" icon="icons/color4.png"
               text="Clear #4 Group" description="Clear #4 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="4"/>
       </action>
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo5Action" class="com.mnw.stickyselection.actions.PaintSelectionTo5Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo5Action" class="com.mnw.stickyselection.actions.PaintSelectionTo5Action" icon="icons/color5.png"
               text="Paint Selection to #5" description="Paint Selection to #5">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="5"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup5Action" class="com.mnw.stickyselection.actions.ClearPaintGroup5Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup5Action" class="com.mnw.stickyselection.actions.ClearPaintGroup5Action" icon="icons/color5.png"
               text="Clear #5 Group" description="Clear #5 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="5"/>
       </action>
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo6Action" class="com.mnw.stickyselection.actions.PaintSelectionTo6Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo6Action" class="com.mnw.stickyselection.actions.PaintSelectionTo6Action" icon="icons/color6.png"
               text="Paint Selection to #6" description="Paint Selection to #6">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="6"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup6Action" class="com.mnw.stickyselection.actions.ClearPaintGroup6Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup6Action" class="com.mnw.stickyselection.actions.ClearPaintGroup6Action" icon="icons/color6.png"
               text="Clear #6 Group" description="Clear #6 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="6"/>
       </action>
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo7Action" class="com.mnw.stickyselection.actions.PaintSelectionTo7Action"
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo7Action" class="com.mnw.stickyselection.actions.PaintSelectionTo7Action" icon="icons/color7.png"
               text="Paint Selection to #7" description="Paint Selection to #7">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="7"/>
       </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup7Action" class="com.mnw.stickyselection.actions.ClearPaintGroup7Action"
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup7Action" class="com.mnw.stickyselection.actions.ClearPaintGroup7Action" icon="icons/color7.png"
               text="Clear #7 Group" description="Clear #7 Selection Group">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="7"/>
       </action>
 
 
-      <action id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" class="com.mnw.stickyselection.actions.ClearAllPaintGroupAction"
+      <action id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" class="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" icon="icons/cross.png"
               text="Clear All Groups" description="Clear All Selection Groups">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="F10"/>
       </action>
 
       <group>
           <separator/>
-          <group id="StickyHighlight.Menu" text="StickyHighlight" popup="true">
+          <group id="StickyHighlight.Menu" text="StickyHighlight" icon="/highlighter.png" popup="true">
               <reference id="com.mnw.stickyselection.actions.PaintSelectionTo0Action" />
               <reference id="com.mnw.stickyselection.actions.PaintSelectionTo1Action" />
               <reference id="com.mnw.stickyselection.actions.PaintSelectionTo2Action" />
@@ -144,6 +145,7 @@
               <reference id="com.mnw.stickyselection.actions.PaintSelectionTo5Action" />
               <reference id="com.mnw.stickyselection.actions.PaintSelectionTo6Action" />
               <reference id="com.mnw.stickyselection.actions.PaintSelectionTo7Action" />
+              <separator/>
               <reference id="com.mnw.stickyselection.actions.ClearPaintGroup0Action" />
               <reference id="com.mnw.stickyselection.actions.ClearPaintGroup1Action" />
               <reference id="com.mnw.stickyselection.actions.ClearPaintGroup2Action" />
@@ -152,8 +154,10 @@
               <reference id="com.mnw.stickyselection.actions.ClearPaintGroup5Action" />
               <reference id="com.mnw.stickyselection.actions.ClearPaintGroup6Action" />
               <reference id="com.mnw.stickyselection.actions.ClearPaintGroup7Action" />
+              <separator/>
               <reference id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" />
           </group>
+          <separator/>
           <add-to-group group-id="EditorPopupMenu" anchor="last"/>
       </group>
   </actions>
