@@ -2,7 +2,7 @@ package com.mnw.stickyselection.infrastructure;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.mnw.stickyselection.model.PropertiesSaver;
-import com.mnw.stickyselection.model.ValuesRepositoryReader;
+import com.mnw.stickyselection.model.ValuesRepository;
 
 import java.awt.*;
 
@@ -18,10 +18,10 @@ public class PropertiesSaverImpl implements PropertiesSaver {
     }
 
     @Override
-    public void saveToPermanentStorage(ValuesRepositoryReader savedValues) {
-        propertiesComponent.setValue(PropertiesFields.PLUGIN_ENABLED, String.valueOf(savedValues.isPluginEnabled()));
+    public void saveToPermanentStorage(ValuesRepository savedValues) {
+        propertiesComponent.setValue(PropertiesFields.PLUGIN_ENABLED, String.valueOf(savedValues.getIsPluginEnabled()));
 
-        propertiesComponent.setValue(PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_0, String.valueOf(savedValues.getHighlightLayerOfSelectionGroup(0)));
+        /*propertiesComponent.setValue(PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_0, String.valueOf(savedValues.getHighlightLayerOfSelectionGroup(0)));
         propertiesComponent.setValue(PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_1, String.valueOf(savedValues.getHighlightLayerOfSelectionGroup(1)));
         propertiesComponent.setValue(PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_2, String.valueOf(savedValues.getHighlightLayerOfSelectionGroup(2)));
         propertiesComponent.setValue(PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_3, String.valueOf(savedValues.getHighlightLayerOfSelectionGroup(3)));
@@ -46,7 +46,7 @@ public class PropertiesSaverImpl implements PropertiesSaver {
         propertiesComponent.setValue(PropertiesFields.COLOR_SELECTION_GROUP_4, generateRgbHexString(savedValues.getColorOfSelectionGroup(4)));
         propertiesComponent.setValue(PropertiesFields.COLOR_SELECTION_GROUP_5, generateRgbHexString(savedValues.getColorOfSelectionGroup(5)));
         propertiesComponent.setValue(PropertiesFields.COLOR_SELECTION_GROUP_6, generateRgbHexString(savedValues.getColorOfSelectionGroup(6)));
-        propertiesComponent.setValue(PropertiesFields.COLOR_SELECTION_GROUP_7, generateRgbHexString(savedValues.getColorOfSelectionGroup(7)));
+        propertiesComponent.setValue(PropertiesFields.COLOR_SELECTION_GROUP_7, generateRgbHexString(savedValues.getColorOfSelectionGroup(7)));*/
     }
 
     private String generateRgbHexString(Color colorOfSelectionGroup) {

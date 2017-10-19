@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * TODO description of this class is missing
  */
-public class DefaultValues implements ValuesRepositoryReader {
+public class DefaultValues {
 
     public static final String[] DEFAULT_COLORS = {
         "0xB060D0",
@@ -51,6 +51,14 @@ public class DefaultValues implements ValuesRepositoryReader {
 
     public boolean isMarkerEnabledForSelectionGroup(int groupNumber) {
         return true;
+    }
+
+    public void setIsPluginEnabled(boolean enabled) {
+
+    }
+
+    public PaintGroupProperties getPaintGroupProperties(int groupNumber) {
+        return null;
     }
 
     public boolean isPluginEnabled() {

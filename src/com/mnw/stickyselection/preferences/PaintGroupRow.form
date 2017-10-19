@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.mnw.stickyselection.preferences.PaintGroupRow">
+  <grid id="27dc6" binding="rowPanel" layout-manager="GridLayoutManager" row-count="2" column-count="8" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="860" height="65"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="2c8d1" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="122" height="21"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Paint Group Shortcut"/>
+        </properties>
+      </component>
+      <component id="82a5d" class="javax.swing.JTextField" binding="textFieldShortcut">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="74" height="31"/>
+            <maximum-size width="50" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <columns value="1"/>
+          <text value="2"/>
+          <toolTipText value="When the Paint Group popup is shown you can press this button to select this one."/>
+        </properties>
+      </component>
+      <component id="d5167" class="com.mnw.stickyselection.preferences.ColorButton" binding="colorButton" custom-create="true">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="80" height="20"/>
+          </grid>
+        </constraints>
+        <properties>
+          <toolTipText value="Color of the highlight after you added a text to the paint group"/>
+        </properties>
+      </component>
+      <component id="ea184" class="javax.swing.JCheckBox" binding="checkBoxFrame">
+        <constraints>
+          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Show frame"/>
+          <toolTipText value="This can come handy, when you wish to see if something is in the paint group even when it is selected."/>
+        </properties>
+      </component>
+      <component id="25a4a" class="javax.swing.JTextField" binding="textFieldLayer">
+        <constraints>
+          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="70" height="31"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="2000"/>
+          <toolTipText value="Priority order of this highlight. Higher priorities will cover lower ones. &#10;Hint from the IntelliJ sources: CARET_ROW = 1000; SYNTAX = 2000; ADDITIONAL_SYNTAX = 3000; GUARDED_BLOCKS = 3500; WARNING = 4000; ERROR = 5000; SELECTION = 6000;"/>
+        </properties>
+      </component>
+      <component id="d70b4" class="javax.swing.JCheckBox" binding="checkBoxMarker">
+        <constraints>
+          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Show in marker bar"/>
+          <toolTipText value="Show a marker in the marker bar to the right"/>
+        </properties>
+      </component>
+      <component id="e20d6" class="javax.swing.JButton" binding="removeButton" default-binding="true">
+        <constraints>
+          <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <actionCommand value="RemovePaintGroup"/>
+          <text value="Remove"/>
+        </properties>
+      </component>
+      <component id="c2c85" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Highlight layer"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

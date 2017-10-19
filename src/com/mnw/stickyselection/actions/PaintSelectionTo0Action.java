@@ -15,6 +15,6 @@ public class PaintSelectionTo0Action extends AnAction {
         Editor editor = actionEvent.getData(PlatformDataKeys.EDITOR);
         Application application = ApplicationManager.getApplication();
         StickySelectionAppComponent identHighlightComp = application.getComponent(StickySelectionAppComponent.class);
-        identHighlightComp.paintSelection(editor, 0);
+        //identHighlightComp.paintSelection(editor, 0);
     }
 }

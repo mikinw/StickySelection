@@ -3,8 +3,8 @@ package com.mnw.stickyselection.infrastructure;
 import com.intellij.ide.util.PropertiesComponent;
 import com.mnw.stickyselection.model.DefaultValues;
 import com.mnw.stickyselection.model.PropertiesLoader;
+import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import com.mnw.stickyselection.model.ValuesRepository;
-import com.mnw.stickyselection.model.ValuesRepositoryReader;
 
 import java.awt.*;
 
@@ -20,13 +20,13 @@ public class PropertiesLoaderImpl implements PropertiesLoader {
     }
 
     @Override
-    public ValuesRepositoryReader loadFromPermanentStorageOrDefault(final DefaultValues defaultValues) {
+    public ValuesRepository loadFromPermanentStorageOrDefault(final DefaultValues defaultValues) {
 
-        final ValuesRepository ret = new ValuesRepository();
+        final ValuesRepositoryImpl ret = new ValuesRepositoryImpl();
 
         ret.setIsPluginEnabled(propertiesComponent.getBoolean(PropertiesFields.PLUGIN_ENABLED, defaultValues.isPluginEnabled()));
 
-        ret.setHighlightLayerOfSelectionGroup(0, getHighlightLayer(0, PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_0, defaultValues));
+        /*ret.setHighlightLayerOfSelectionGroup(0, getHighlightLayer(0, PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_0, defaultValues));
         ret.setHighlightLayerOfSelectionGroup(1, getHighlightLayer(1, PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_1, defaultValues));
         ret.setHighlightLayerOfSelectionGroup(2, getHighlightLayer(2, PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_2, defaultValues));
         ret.setHighlightLayerOfSelectionGroup(3, getHighlightLayer(3, PropertiesFields.HIGHLIGHT_LAYER_SELECTION_GROUP_3, defaultValues));
@@ -59,7 +59,7 @@ public class PropertiesLoaderImpl implements PropertiesLoader {
         ret.setColorOfSelectionGroup(4, getColor(4, PropertiesFields.COLOR_SELECTION_GROUP_4, defaultValues));
         ret.setColorOfSelectionGroup(5, getColor(5, PropertiesFields.COLOR_SELECTION_GROUP_5, defaultValues));
         ret.setColorOfSelectionGroup(6, getColor(6, PropertiesFields.COLOR_SELECTION_GROUP_6, defaultValues));
-        ret.setColorOfSelectionGroup(7, getColor(7, PropertiesFields.COLOR_SELECTION_GROUP_7, defaultValues));
+        ret.setColorOfSelectionGroup(7, getColor(7, PropertiesFields.COLOR_SELECTION_GROUP_7, defaultValues));*/
 
         return ret;
     }

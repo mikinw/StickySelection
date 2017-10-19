@@ -1,0 +1,131 @@
+<idea-plugin version="2">
+  <id>com.mnw.stickyselection</id>
+  <name>Sticky Selection</name>
+  <version>2.0</version>
+  <vendor email="mikinw.development@gmail.com" url="http://mikinw.blogspot.co.uk">MikiNW</vendor>
+
+  <description><![CDATA[
+      Gives visual hint where you can find certain strings, you are looking for.
+      You can mark a selection to be permanent, and so when you move the caret away, the selection will remain highlighted.
+      <ul>
+      <li>You can have up to 8 selection groups<br>
+      <li>You can set different colours for each
+      <li>You can set a marker to be visible on the right side of the editor
+      <li>You can add multiple selections to the same group
+      </ul>
+
+      Default shortcuts
+      <ul>
+      <li>Press <em>Meta + Alt + F9</em> than a number (0..7) to paint a selection.
+      <li>Press <em>Meta + Alt + F10</em> than a number (0..7) to clear a selection.
+      <li>Press <em>Meta + Alt + F10</em> than <em>F10</em> to clear all selections.
+      ]]></description>
+
+    <!-- TODO rewrite xth selection to a given text => turn selection to multi caret (popup) -->
+    <!-- TODO undo selection -->
+    <!-- Postponed indefinitely: redo selection -->
+    <!-- TODO next/previous selection -->
+    <!-- TODO settings page to set: number of highlights (?), colour, framed highlight? -->
+    <!-- TODO show colour in popup -->
+
+    <!-- editor, prev/next refactor, settings -> editor, add actions dynamically
+    navigate down bugzik: a legközelebbi selectiont találja meg,
+    convert nem letezot exception -->
+
+
+  <change-notes><![CDATA[
+      v2.0-pre this is the first release<br>
+      ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="107.105"/>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <application-components>
+    <!-- Add your application components here -->
+      <component>
+          <implementation-class>com.mnw.stickyselection.StickySelectionAppComponent</implementation-class>
+      </component>
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+<!--
+      <group id="MyPlugin.SampleMenu" text="_Sample Menu" description="Sample menu">
+          <add-to-group group-id="MainMenu" anchor="last"  />
+          <action id="Myplugin.Textboxes" class="com.mnw.stickyselection.TextBoxes" text="Text _Boxes" description="A test menu item" />
+      </group>
+-->
+
+
+      <action id="com.mnw.stickyselection.actions.PaintSelectionTo0Action" class="com.mnw.stickyselection.actions.PaintSelectionTo0Action"
+              text="Paint Selection to #0" description="Paint Selection to #0">
+          <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="0"/>
+      </action>
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroup0Action" class="com.mnw.stickyselection.actions.ClearPaintGroup0Action"
+              text="Clear #0 Group" description="Clear #0 Selection Group">
+          <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="0"/>
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" class="com.mnw.stickyselection.actions.ClearAllPaintGroupAction"
+              text="Clear All Groups" description="Clear All Selection Groups">
+          <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="F10"/>
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.ConvertPaintGroupToSelection" class="com.mnw.stickyselection.actions.ConvertPaintGroupToSelection"
+              text="Convert" description="Convert to multi-caret selection">
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.UndoLastPaintAction" class="com.mnw.stickyselection.actions.UndoLastPaintAction"
+              text="Undo" description="Convert to multi-caret selection">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt M"/>
+      </action>
+
+
+      <action id="com.mnw.stickyselection.actions.NavigateToNextPaint" class="com.mnw.stickyselection.actions.NavigateToNextPaint"
+              text="Next" description="Convert to multi-caret selection">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt N"/>
+
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.PaintSelectionPopupAction" class="com.mnw.stickyselection.actions.PaintSelectionPopupAction"
+              text="ShowPopup" description="Convert to multi-caret selection">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt B"/>
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction" class="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction"
+              text="ShowPopup" description="Convert to multi-caret selection">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
+      </action>
+
+      <group>
+          <separator/>
+          <group id="StickyHighlight.Menu" text="StickyHighlight" popup="true">
+              <reference id="com.mnw.stickyselection.actions.PaintSelectionTo0Action" />
+              <reference id="com.mnw.stickyselection.actions.ClearPaintGroup0Action" />
+              <reference id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" />
+              <reference id="com.mnw.stickyselection.actions.ConvertPaintGroupToSelection" />
+              <reference id="com.mnw.stickyselection.actions.UndoLastPaintAction" />
+              <reference id="com.mnw.stickyselection.actions.PaintSelectionPopupAction" />
+              <reference id="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction" />
+              <reference id="com.mnw.stickyselection.actions.NavigateToNextPaint" />
+          </group>
+          <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+      </group>
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+      <applicationConfigurable instance="com.mnw.stickyselection.preferences.StickySelectionPreferences"/>
+      <applicationService serviceInterface="com.mnw.stickyselection.model.ValuesRepository" serviceImplementation="com.mnw.stickyselection.model.ValuesRepositoryImpl" />
+  </extensions>
+</idea-plugin>

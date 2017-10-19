@@ -24,8 +24,15 @@ public class PreferencesSetColorActionListener implements ActionListener {
         }
         final ColorButton colorButton = (ColorButton) source;
         Color currentColor = colorButton.getColor();
+        //noinspection UseJBColor
+        colorButton.setColor(new Color(
+                currentColor.getRed(),
+                currentColor.getGreen(),
+                currentColor.getBlue(),
+                250));
         Color newColor = JColorChooser.showDialog(colorButton, dialogTitle, currentColor);
         if (newColor == null) {
+            colorButton.setColor(currentColor);
             return;
         }
         colorButton.setColor(newColor);

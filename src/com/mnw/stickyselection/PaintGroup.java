@@ -18,6 +18,7 @@ public class PaintGroup {
     }
 
     public void add(RangeHighlighter rangeHighlighter) {
+
         highlighters.add(rangeHighlighter);
     }
 
@@ -32,5 +33,12 @@ public class PaintGroup {
         for (RangeHighlighter highlighter : highlighters) {
             highlighter.getTextAttributes().setBackgroundColor(color);
         }
+    }
+
+    public boolean has(RangeHighlighter rangeHighlighter) {
+        //for (RangeHighlighter highlighter : highlighters) {
+        //    if (highlighter.getStartOffset() == rangeHighlighter.getStartOffset() && highlighter.getEndOffset() == rangeHighlighter.getEndOffset() && highlighter.get)
+        //}
+        return false;
     }
 }
