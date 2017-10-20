@@ -1,17 +1,18 @@
 package com.mnw.stickyselection.preferences;
 
-import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.application.Application;
+import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.mnw.stickyselection.StickySelectionAppComponent;
-import com.mnw.stickyselection.infrastructure.PropertiesSaverImpl;
+import com.mnw.stickyselection.actions.PaintSelectionPopupAction;
+import com.mnw.stickyselection.infrastructure.RandomPaintGroupData;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
-import com.mnw.stickyselection.model.PropertiesSaver;
 import com.mnw.stickyselection.model.ValuesRepository;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 
 public class StickySelectionPreferences implements Configurable {
@@ -33,6 +35,8 @@ public class StickySelectionPreferences implements Configurable {
 
 
     private ValuesRepository savedValues;
+
+    private List<Integer> deletedDataBeans = new ArrayList<>();
 
     public StickySelectionPreferences() {
         savedValues = ServiceManager.getService(ValuesRepository.class);
@@ -56,11 +60,9 @@ public class StickySelectionPreferences implements Configurable {
         }
     }
 
-    private void addNewPaintGroupRow(PaintGroupDataBean paintGroupProperties) {
+    private void addNewPaintGroupRow(@NotNull final PaintGroupDataBean paintGroupProperties) {
         final PaintGroupRow paintGroupRow = new PaintGroupRow();
-        if (paintGroupProperties != null) {
-            paintGroupRow.setData(paintGroupProperties);
-        }
+        paintGroupRow.setData(paintGroupProperties);
         paintGroupRow.addRemoveClickListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -69,6 +71,7 @@ public class StickySelectionPreferences implements Configurable {
                     panelColorScheme.remove(paintGroupRow.$$$getRootComponent$$$());
                     panelColorScheme.updateUI();
                 }
+                deletedDataBeans.add(paintGroupRow.getDataBeanId());
                 paintGroupRows.remove(paintGroupRow);
             }
         });
@@ -80,6 +83,7 @@ public class StickySelectionPreferences implements Configurable {
     @Override
     public JComponent createComponent() {
         setupUI();
+        deletedDataBeans.clear();
         setData(savedValues);
         return mainPanel;
     }
@@ -120,11 +124,12 @@ public class StickySelectionPreferences implements Configurable {
 
         buttonAddSelectionGroup = new JButton();
         buttonAddSelectionGroup.setText("Add New Paint Group");
+        buttonAddSelectionGroup.setHorizontalAlignment(SwingConstants.LEFT);
         panelColorScheme.add(buttonAddSelectionGroup);
         buttonAddSelectionGroup.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StickySelectionPreferences.this.addNewPaintGroupRow(null);
+                StickySelectionPreferences.this.addNewPaintGroupRow(RandomPaintGroupData.createBean());
                 panelColorScheme.updateUI();
             }
         });
@@ -150,12 +155,16 @@ public class StickySelectionPreferences implements Configurable {
         }
 //        System.out.println("apply()");
 
-        savedValues.removeFrom(paintGroupRows.size());
+        savedValues.removeWithIds(deletedDataBeans);
+        deletedDataBeans.clear();
         for (int i = 0; i < paintGroupRows.size(); i++) {
-            if (savedValues.getPaintGroupCount() <= i) {
+            final PaintGroupRow paintGroupRow = paintGroupRows.get(i);
+            if (savedValues.hasDataBeanId(paintGroupRow.getDataBeanId())) {
+                paintGroupRow.getData(savedValues.getPaintGroupPropertiesWithId(paintGroupRow.getDataBeanId()));
+            } else {
                 savedValues.addNewPaintGroup();
+                paintGroupRow.getData(savedValues.getLast());
             }
-            paintGroupRows.get(i).getData(savedValues.getPaintGroupProperties(i));
         }
         panelColorScheme.updateUI();
 
@@ -163,6 +172,9 @@ public class StickySelectionPreferences implements Configurable {
                 .getApplication()
                 .getComponent(StickySelectionAppComponent.class);
         applicationComponent.updateAllHighlighters();
+
+
+        //ActionManager.getInstance().registerAction("asdfasdf", new PaintSelectionPopupAction(), PluginId.getId("com.mnw.stickyselection"));
     }
 
     @Override

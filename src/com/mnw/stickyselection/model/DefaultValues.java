@@ -57,10 +57,6 @@ public class DefaultValues {
 
     }
 
-    public PaintGroupProperties getPaintGroupProperties(int groupNumber) {
-        return null;
-    }
-
     public boolean isPluginEnabled() {
         return true;
     }

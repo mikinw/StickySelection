@@ -56,7 +56,7 @@ public class PaintGroupListPopupStep implements ListPopupStep<PaintGroupDataBean
     public String getTextFor(PaintGroupDataBean paintGroupDataBean) {
         return String.format(" %s - Paint group (layer: %d)",
                              paintGroupDataBean.getShortcut(),
-                             paintGroupDataBean.getHughlightLayer());
+                             paintGroupDataBean.getHighlightLayer());
     }
 
     @Nullable

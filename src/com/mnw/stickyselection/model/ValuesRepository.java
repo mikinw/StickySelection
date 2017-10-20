@@ -1,5 +1,7 @@
 package com.mnw.stickyselection.model;
 
+import java.util.List;
+
 public interface ValuesRepository {
 
     PaintGroupDataBean getPaintGroupProperties(int groupNumber);
@@ -7,5 +9,8 @@ public interface ValuesRepository {
     boolean getIsPluginEnabled();
     int getPaintGroupCount();
     void addNewPaintGroup();
-    void removeFrom(int groupNumber);
+    void removeWithIds(List<Integer> idsToRemove);
+    boolean hasDataBeanId(int dataBeanId);
+    PaintGroupDataBean getPaintGroupPropertiesWithId(int dataBeanId);
+    PaintGroupDataBean getLast();
 }

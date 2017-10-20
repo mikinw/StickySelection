@@ -10,7 +10,6 @@ import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.mnw.stickyselection.model.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.HashMap;
 
 public class StickySelectionAppComponent implements ApplicationComponent, EditorFactoryListener,
@@ -49,7 +48,7 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
             return;
         }
 
-        StickySelectionEditorComponent editorHighlighter = new StickySelectionEditorComponent(editorFactoryEvent.getEditor());
+        StickySelectionEditorComponent editorHighlighter = new StickySelectionEditorComponent(editor);
         editors.put(editorFactoryEvent.getEditor(), editorHighlighter);
 
     }
@@ -64,17 +63,8 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
         editorHighlighter.dispose();
     }
 
-    public void clearPaintGroup(Editor editor, int paintGroup) {
-        StickySelectionEditorComponent editorHighlighter = editors.get(editor);
-        if(editorHighlighter == null)
-            return;
-        editorHighlighter.clearPaintGroup(paintGroup);
-    }
-
     public void updateAllHighlighters() {
-        for(StickySelectionEditorComponent editor : editors.values()) {
-            editor.repaint(savedValues);
-        }
+        editors.values().forEach(StickySelectionEditorComponent::updateAllHighlighters);
     }
 
     public StickySelectionEditorComponent getStickySelectionEditorComponent(Editor editor) {

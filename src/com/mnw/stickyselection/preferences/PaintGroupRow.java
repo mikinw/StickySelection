@@ -6,10 +6,9 @@ import com.mnw.stickyselection.model.PaintGroupDataBean;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.Random;
@@ -22,34 +21,23 @@ public class PaintGroupRow {
     private JTextField textFieldLayer;
     private JCheckBox checkBoxFrame;
     private JPanel rowPanel;
+    private int dataBeanId;
 
     public PaintGroupRow() {
         $$$setupUI$$$();
 
-        final OnlyNumbersDocumentFilter onlyNumbersDocumentFilter = new OnlyNumbersDocumentFilter();
-        ((AbstractDocument) textFieldLayer.getDocument()).setDocumentFilter(onlyNumbersDocumentFilter);
+        ((AbstractDocument) textFieldLayer.getDocument()).setDocumentFilter(new OnlyNumbersDocumentFilter());
 
-        ((AbstractDocument) textFieldShortcut.getDocument()).setDocumentFilter(new DocumentFilter() {
-            @Override
-            public void insertString(FilterBypass fb, int offset, String string,
-                                     AttributeSet attr) throws BadLocationException {
-                fb.replace(0, fb.getDocument().getLength(), string.substring(0, 1).toUpperCase(), attr);
-            }
-
-            @Override
-            public void replace(FilterBypass fb, int offset, int length, String text,
-                                AttributeSet attrs) throws BadLocationException {
-                super.replace(fb, 0, fb.getDocument().getLength(), text.substring(0, 1).toUpperCase(), attrs);
-            }
-        });
+        ((AbstractDocument) textFieldShortcut.getDocument()).setDocumentFilter(new OnlyOneCharacterFilter());
     }
 
     public void setData(PaintGroupDataBean data) {
         textFieldShortcut.setText(data.getShortcut());
         checkBoxFrame.setSelected(data.isFrameNeeded());
-        textFieldLayer.setText(String.valueOf(data.getHughlightLayer()));
+        textFieldLayer.setText(String.valueOf(data.getHighlightLayer()));
         checkBoxMarker.setSelected(data.isMarkerNeeded());
         colorButton.setColor(data.getColor());
+        dataBeanId = data.getId();
     }
 
     public void getData(PaintGroupDataBean data) {
@@ -58,6 +46,10 @@ public class PaintGroupRow {
         data.setLayer(Integer.parseUnsignedInt(textFieldLayer.getText()));
         data.setMarkerNeeded(checkBoxMarker.isSelected());
         data.setColor(colorButton.getColor());
+    }
+
+    public int getDataBeanId() {
+        return dataBeanId;
     }
 
     public boolean isModified(PaintGroupDataBean data) {
@@ -69,7 +61,7 @@ public class PaintGroupRow {
         if (checkBoxFrame.isSelected() != data.isFrameNeeded()) {
             return true;
         }
-        if (!textFieldLayer.getText().equals(String.valueOf(data.getHughlightLayer()))) {
+        if (!textFieldLayer.getText().equals(String.valueOf(data.getHighlightLayer()))) {
             return true;
         }
         if (checkBoxMarker.isSelected() != data.isMarkerNeeded()) {
@@ -84,9 +76,8 @@ public class PaintGroupRow {
     }
 
     private void createUIComponents() {
-        Random random = new Random((new Date()).getTime());
         colorButton = new ColorButton();
-        colorButton.setColor(Color.getHSBColor(random.nextFloat(), random.nextFloat(), random.nextFloat()));
+        colorButton.setColor(Color.white);
     }
 
     public void addRemoveClickListener(final ActionListener listener) {

@@ -10,6 +10,7 @@ public class PaintGroupDataBean {
     private int layer;
     private boolean markerNeeded;
     private Color color;
+    private int id;
 
     public PaintGroupDataBean() {}
 
@@ -29,7 +30,7 @@ public class PaintGroupDataBean {
         this.frameNeeded = frameNeeded;
     }
 
-    public int getHughlightLayer() {
+    public int getHighlightLayer() {
         return layer;
     }
 
@@ -77,5 +78,43 @@ public class PaintGroupDataBean {
                 Integer.decode(split[1]),
                 Integer.decode(split[2])
                 );
+    }
+
+    @Override
+    @Transient
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PaintGroupDataBean that = (PaintGroupDataBean) o;
+
+        if (frameNeeded != that.frameNeeded) return false;
+        if (layer != that.layer) return false;
+        if (markerNeeded != that.markerNeeded) return false;
+        if (shortcut != null ? !shortcut.equals(that.shortcut) : that.shortcut != null) return false;
+        return color.equals(that.color);
+
+    }
+
+    @Override
+    @Transient
+    public int hashCode() {
+        int result = shortcut != null ? shortcut.hashCode() : 0;
+        result = 31 * result + (frameNeeded ? 1 : 0);
+        result = 31 * result + layer;
+        result = 31 * result + (markerNeeded ? 1 : 0);
+        result = 31 * result + color.hashCode();
+        return result;
+    }
+
+    @Transient
+    /*package*/ void setId(int id) {
+        assert this.id == 0;
+        this.id = id;
+    }
+
+    @Transient
+    public int getId() {
+        return id;
     }
 }
