@@ -7,7 +7,7 @@
   <description><![CDATA[
       You can mark a selection to be permanently highlighted, even when your caret moves away.
 
-      You can define an arbitrary number of Paint Groups. Selecting the appropriate editor action
+      <br>You can define an arbitrary number of Paint Groups. Selecting the appropriate editor action
       (keystroke or context menu), the all occurrences of currently selected text will be added to
       the Paint Group and will be permanently highlighted (until you clear the selection with an
       other editor action). So you can have different text fragments to be selected with the same
@@ -23,7 +23,7 @@
       <li>Keymap actions are added dynamically for paint, clear and convert as you add more Paint Group
       </ul>
 
-      Undo works up until the document is changed.
+      <br>Undo works up until the document is changed.
       Navigating in a specific Paint Group works like this:
       <ul>
       <li>If the caret is inside a Paint Group upcoming navigation will move caret among the Paints in that Paint Group.
@@ -35,7 +35,7 @@
       <li>If caret is moved, decision starts from the beginning.
       </ul>
 
-      Default shortcuts (but I highly encourage to define your own or at least check with your current
+      <br>Default shortcuts (but I highly encourage to define your own or at least check with your current
       shortcuts)>
       <ul>
       <li>Press <em>Ctrl + Alt + F9</em> to paint a selection (showing popup for selecting Paint Group). If
@@ -46,7 +46,7 @@
       <li>Press <em>Ctrl + Alt + quote</em> to navigate to next Paint in the current Paint Group.
       <li>Press <em>Ctrl + Alt + semicolon</em> to navigate to previous Paint in the current Paint Group.
       </ul>
-      Note: control + alt on Mac is (I guess) meta + alt
+      <br>Note: control + alt on Mac is (I guess) meta + alt
       ]]></description>
 
 
