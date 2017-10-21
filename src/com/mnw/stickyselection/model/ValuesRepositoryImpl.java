@@ -26,6 +26,7 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
     private int idStore = 1;
 
     private boolean isPluginEnabled;
+    private boolean isCycleThroughEnabled;
 
     public ValuesRepositoryImpl() {
     }
@@ -101,6 +102,16 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
     public PaintGroupDataBean getLast() {
         return paintGroupProperties.get(paintGroupProperties.size() - 1);
 
+    }
+
+    @Override
+    public boolean getIsCycleThroughEnabled() {
+        return isCycleThroughEnabled;
+    }
+
+    @Override
+    public void setIsCycleThroughEnabled(boolean isCycleThroughEnabled) {
+        this.isCycleThroughEnabled = isCycleThroughEnabled;
     }
 
     @Nullable

@@ -11,7 +11,7 @@ public class ConvertPaintGroupToSelection extends ShowPopupAction {
     protected PaintGroupListPopupStep createListStep() {
         return new PaintGroupListPopupStep(
                 "Convert to Multi Caret Selection",
-                new PerformConvertToMultiCaretSelectionRunnable(stickySelectionEditorComponent)
+                PerformConvertToMultiCaretSelectionRunnable.getFactory(stickySelectionEditorComponent)
         );
     }
 }

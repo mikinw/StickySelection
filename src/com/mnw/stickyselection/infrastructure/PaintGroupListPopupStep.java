@@ -18,12 +18,12 @@ public class PaintGroupListPopupStep implements ListPopupStep<PaintGroupDataBean
 
 
     private final List<PaintGroupDataBean> list;
-    private final PerformStickyActionRunnable performAction;
+    private final PerformRunnableFactory runnableFactory;
     private final String title;
 
-    public PaintGroupListPopupStep(String title, PerformStickyActionRunnable runnable) {
+    public PaintGroupListPopupStep(String title, PerformRunnableFactory runnableFactory) {
         this.title = title;
-        performAction = runnable;
+        this.runnableFactory = runnableFactory;
         final ValuesRepository valuesRepository = ServiceManager.getService(ValuesRepository.class);
 
         list = new ArrayList<>(valuesRepository.getPaintGroupCount());
@@ -79,7 +79,8 @@ public class PaintGroupListPopupStep implements ListPopupStep<PaintGroupDataBean
     @Nullable
     @Override
     public PopupStep<PaintGroupDataBean> onChosen(PaintGroupDataBean selectedValue, boolean finalChoice) {
-        performAction.run(list.indexOf(selectedValue));
+        final Runnable performAction = runnableFactory.createPerformAction(list.indexOf(selectedValue));
+        performAction.run();
         return PopupStep.FINAL_CHOICE;
     }
 

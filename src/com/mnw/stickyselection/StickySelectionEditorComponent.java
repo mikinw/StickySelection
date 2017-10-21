@@ -2,7 +2,6 @@ package com.mnw.stickyselection;
 
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionStub;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ServiceManager;
@@ -12,9 +11,9 @@ import com.intellij.openapi.editor.event.CaretListener;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.markup.*;
-import com.intellij.openapi.ui.ex.MessagesEx;
 import com.jgoodies.common.base.Strings;
 import com.mnw.stickyselection.actions.UndoLastPaintAction;
+import com.mnw.stickyselection.infrastructure.*;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 import com.mnw.stickyselection.model.ValuesRepository;
 
@@ -22,9 +21,8 @@ import java.util.*;
 
 public class StickySelectionEditorComponent {
 
-    private static final int MAX_NUMBER_OF_PAINT_GROUPS = 8;
     private static final int INITIAL_CAPACITY = 16;
-    private Editor editor;
+    private final Editor editor;
     protected List<PaintGroup> paintGroups = new ArrayList<>();
 
     private List<RangeHighlighter> undoList = new ArrayList<>();
@@ -64,7 +62,7 @@ public class StickySelectionEditorComponent {
 
     public void dispose() {
         clearState();
-        editor = null;
+        //editor = null;
     }
 
     protected void clearState() {
@@ -248,133 +246,114 @@ public class StickySelectionEditorComponent {
 
     }
 
+    public void navigateToPaint(final SuggestCaret suggestCaret,
+                                final FindClosestHighlighter findClosestHighlighter) {
+        final boolean isCycleThroughEnabled = ServiceManager.getService(ValuesRepository.class).getIsCycleThroughEnabled();
 
-    public void navigateToNextPaint() {
         final CaretModel caretModel = editor.getCaretModel();
 
         final int currentCaret = caretModel.getOffset();
 
         // if there was a previous navigation action, try to stick to it, and navigate inside that group
         if (navigationGroup >= 0) {
-            for (int i = 0; i < paintGroups.get(navigationGroup).highlighters.size(); i++) {
-                if (paintGroups.get(navigationGroup).highlighters.get(i).getStartOffset() <= currentCaret
-                        && paintGroups.get(navigationGroup).highlighters.get(i).getEndOffset() >= currentCaret) {
-                    int next = i == paintGroups.get(navigationGroup).highlighters.size() - 1 ? 0 : i + 1;
-                    caretModel.getPrimaryCaret().moveToOffset(paintGroups.get(navigationGroup).highlighters.get(next).getStartOffset());
-                    editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-                    return;
-                }
+            final ArrayList<RangeHighlighter> highlighters = paintGroups.get(navigationGroup).highlighters;
+            final int suggestedCaretPos = suggestCaret.findCaretInPaintGroup(currentCaret, highlighters, isCycleThroughEnabled);
+            if (moveCaret(navigationGroup, suggestedCaretPos)) {
+                return;
             }
         }
 
         // find the first paint group that has the caret inside one of its paints
         final int length = paintGroups.size();
         for (int i1 = 0; i1 < length; i1++) {
-            PaintGroup paintGroup = paintGroups.get(i1);
-            for (int i = 0; i < paintGroup.highlighters.size(); i++) {
-                if (paintGroup.highlighters.get(i).getStartOffset() <= currentCaret
-                        && paintGroup.highlighters.get(i).getEndOffset() >= currentCaret) {
-                    int next = i == paintGroup.highlighters.size() - 1 ? 0 : i + 1;
-                    caretModel.getPrimaryCaret().moveToOffset(paintGroup.highlighters.get(next).getStartOffset());
-                    editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-                    navigationGroup = i1;
-                    return;
-                }
+            final ArrayList<RangeHighlighter> highlighters = paintGroups.get(i1).highlighters;
+            final int suggestedCaretPos = suggestCaret.findCaretInPaintGroup(currentCaret, highlighters, isCycleThroughEnabled);
+            if (moveCaret(i1, suggestedCaretPos)) {
+                return;
             }
         }
 
-        // find the closest paint group searching downward
-        int currentClosestDistance = editor.getDocument().getTextLength();
-        int currentBestCaretOffset = currentCaret;
-        for (int i1 = 0; i1 < length; i1++) {
-            PaintGroup paintGroup = paintGroups.get(i1);
-            for (int i = 0; i < paintGroup.highlighters.size(); i++) {
-                if (paintGroup.highlighters.get(i).getStartOffset() >= currentCaret) {
-                    if (paintGroup.highlighters.get(i).getStartOffset() - currentCaret < currentClosestDistance) {
-                        currentClosestDistance = paintGroup.highlighters.get(i).getStartOffset() - currentCaret;
-                        currentBestCaretOffset = paintGroup.highlighters.get(i).getStartOffset();
-                        navigationGroup = i1;
-                    }
-                    continue;
-                }
-            }
-        }
-        caretModel.getPrimaryCaret().moveToOffset(currentBestCaretOffset);
-        editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-
+        // find the closest paint group regardless of groups
+        navigateToClosestPaint(findClosestHighlighter);
     }
 
-    public void navigateToPreviousPaint() {
-        final CaretModel caretModel = editor.getCaretModel();
+    public void navigateToClosestPaint(final FindClosestHighlighter findClosestHighlighter) {
+        final ValuesRepository savedValues = ServiceManager.getService(ValuesRepository.class);
 
-        final int currentCaret = caretModel.getOffset();
-
-        // if there was a previous navigation action, try to stick to it, and navigate inside that group
-        if (navigationGroup >= 0) {
-            for (int i = paintGroups.get(navigationGroup).highlighters.size() -1; i >= 0; i--) {
-                if (paintGroups.get(navigationGroup).highlighters.get(i).getStartOffset() <= currentCaret
-                        && paintGroups.get(navigationGroup).highlighters.get(i).getEndOffset() >= currentCaret) {
-                    int prev = i == 0 ? paintGroups.get(navigationGroup).highlighters.size() - 1 : i - 1;
-                    caretModel.getPrimaryCaret().moveToOffset(paintGroups.get(navigationGroup).highlighters.get(prev).getStartOffset());
-                    editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-                    return;
-                }
-            }
-        }
-
-        // find the first paint group that has the caret inside one of its paints
+        final int currentCaret = editor.getCaretModel().getOffset();
+        CurrentBest currentBest = new CurrentBest(editor.getDocument().getTextLength(), currentCaret);
+        int documentLength = editor.getDocument().getTextLength();
         final int length = paintGroups.size();
-        for (int i1 = 0; i1 < length; i1++) {
-            PaintGroup paintGroup = paintGroups.get(i1);
-            for (int i = paintGroup.highlighters.size() - 1; i >= 0; i--) {
-                if (paintGroup.highlighters.get(i).getStartOffset() <= currentCaret
-                        && paintGroup.highlighters.get(i).getEndOffset() >= currentCaret) {
-                    int next = i == 0 ? paintGroup.highlighters.size() - 1 : i - 1;
-                    caretModel.getPrimaryCaret().moveToOffset(paintGroup.highlighters.get(next).getStartOffset());
-                    editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-                    navigationGroup = i1;
-                    return;
-                }
+        for (int i = 0; i < length; i++) {
+            final ArrayList<RangeHighlighter> highlighters = paintGroups.get(i).highlighters;
+
+            findClosestHighlighter.findUpcoming(currentCaret, currentBest, i, highlighters);
+
+            if (savedValues.getIsCycleThroughEnabled()) {
+                findClosestHighlighter.findFromStart(currentCaret, documentLength, currentBest, i, highlighters);
             }
         }
-
-        // find the closest paint group searching downward
-        int currentClosestDistance = editor.getDocument().getTextLength();
-        int currentBestCaretOffset = currentCaret;
-        for (int i1 = 0; i1 < length; i1++) {
-            PaintGroup paintGroup = paintGroups.get(i1);
-            for (int i = paintGroup.highlighters.size() -1; i >= 0; i--) {
-                if (paintGroup.highlighters.get(i).getEndOffset() <= currentCaret) {
-                    if (currentCaret - paintGroup.highlighters.get(i).getEndOffset() < currentClosestDistance) {
-                        currentClosestDistance = currentCaret - paintGroup.highlighters.get(i).getEndOffset();
-                        currentBestCaretOffset = paintGroup.highlighters.get(i).getStartOffset();
-                        navigationGroup = i1;
-                    }
-                    continue;
-                }
-            }
-        }
-        caretModel.getPrimaryCaret().moveToOffset(currentBestCaretOffset);
-        editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-
+        moveCaret(currentBest.paintGroup, currentBest.getCaretOffset());
     }
 
-    private class ClearUndoFieldsWhenChanged implements DocumentListener {
-        @Override
-        public void beforeDocumentChange(DocumentEvent documentEvent) {
-
+    private boolean moveCaret(int currentPaintGroup, int suggestedCaretPos) {
+        if (suggestedCaretPos >= 0) {
+            editor.getCaretModel().getPrimaryCaret().moveToOffset(suggestedCaretPos);
+            navigationGroup = currentPaintGroup;
+            editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
+            return true;
         }
-
-        @Override
-        public void documentChanged(DocumentEvent documentEvent) {
-            clearUndoFields();
-        }
+        return false;
     }
+
 
     private void clearUndoFields() {
         undoList.clear();
         lastPaintedGroup = -1;
         setUndoEnabled(false);
+
+    }
+
+    public static class CurrentBest {
+        private int currentClosestDistance;
+        private int currentBestCaretOffset;
+
+        private int paintGroup;
+
+        public CurrentBest(final int currentClosestDistance, final int currentBestCaretOffset) {
+            this.currentClosestDistance = currentClosestDistance;
+            this.currentBestCaretOffset = currentBestCaretOffset;
+        }
+
+        public int getCaretOffset() {
+            return currentBestCaretOffset;
+        }
+
+        public int getClosestDistance() {
+            return currentClosestDistance;
+        }
+
+        public void setClosestDistance(final int closestDistance) {
+            this.currentClosestDistance = closestDistance;
+        }
+
+        public void setCaretOffset(final int caretOffset) {
+            this.currentBestCaretOffset = caretOffset;
+        }
+
+        public void setPaintGroup(final int paintGroup) {
+            this.paintGroup = paintGroup;
+        }
+
+    }
+    private class ClearUndoFieldsWhenChanged implements DocumentListener {
+
+        @Override
+        public void beforeDocumentChange(DocumentEvent documentEvent) {}
+        @Override
+        public void documentChanged(DocumentEvent documentEvent) {
+            clearUndoFields();
+        }
 
     }
 }

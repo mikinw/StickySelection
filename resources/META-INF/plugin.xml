@@ -6,7 +6,7 @@
 
   <description><![CDATA[
       Gives visual hint where you can find certain strings, you are looking for.
-      You can mark a selection to be permanent, and so when you move the caret away, the selection will remain highlighted.
+      You can mark a selection to be permanent, and so when caret moves away, the text will remain highlighted.
       <ul>
       <li>You can have up to 8 selection groups<br>
       <li>You can set different colours for each
@@ -21,16 +21,23 @@
       <li>Press <em>Meta + Alt + F10</em> than <em>F10</em> to clear all selections.
       ]]></description>
 
-    <!-- TODO rewrite xth selection to a given text => turn selection to multi caret (popup) -->
-    <!-- TODO undo selection -->
+    <!-- done rewrite xth selection to a given text => turn selection to multi caret (popup) -->
+    <!-- done undo selection -->
     <!-- Postponed indefinitely: redo selection -->
-    <!-- TODO next/previous selection -->
-    <!-- TODO settings page to set: number of highlights (?), colour, framed highlight? -->
-    <!-- TODO show colour in popup -->
+    <!-- done next/previous selection -->
+    <!-- done action to iterate through all selections regardless of groups -->
+    <!-- done paint group unaware iteration could start from beginning if end of doc depending on settings -->
+    <!-- done settings page to set: number of highlights (?), colour, framed highlight? -->
+    <!-- done show colour in popup -->
 
-    <!-- editor, prev/next refactor, settings -> editor, add actions dynamically
-    navigate down bugzik: a legközelebbi selectiont találja meg,
-    convert nem letezot exception -->
+    <!-- done prev/next refactor, -->
+    <!-- done settings -> editor, -->
+    <!-- TODO add actions dynamically -->
+    <!-- TODO performance improvement could be to replace arrayList of RangeHighlighters to SortedTree of RangeHighlighters -->
+    <!-- partially done TODO disable undo if it's not available -->
+    <!-- done bug: navigate down won't actually find the closest paint,-->
+    <!-- done convert nem letezot exception-->
+    <!-- done bug: the beans are removed, created in valueRepository as the settings screen adds and removes lines -->
 
 
   <change-notes><![CDATA[
@@ -68,57 +75,64 @@
 -->
 
 
-      <action id="com.mnw.stickyselection.actions.PaintSelectionTo0Action" class="com.mnw.stickyselection.actions.PaintSelectionTo0Action"
-              text="Paint Selection to #0" description="Paint Selection to #0">
-          <keyboard-shortcut keymap="$default" first-keystroke="control alt F9" second-keystroke="0"/>
-      </action>
-      <action id="com.mnw.stickyselection.actions.ClearPaintGroup0Action" class="com.mnw.stickyselection.actions.ClearPaintGroup0Action"
-              text="Clear #0 Group" description="Clear #0 Selection Group">
-          <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="0"/>
-      </action>
-
       <action id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" class="com.mnw.stickyselection.actions.ClearAllPaintGroupAction"
               text="Clear All Groups" description="Clear All Selection Groups">
           <keyboard-shortcut keymap="$default" first-keystroke="control alt F10" second-keystroke="F10"/>
       </action>
 
       <action id="com.mnw.stickyselection.actions.ConvertPaintGroupToSelection" class="com.mnw.stickyselection.actions.ConvertPaintGroupToSelection"
-              text="Convert" description="Convert to multi-caret selection">
+              text="Convert to selection" description="Convert to multi-caret selection">
       </action>
 
       <action id="com.mnw.stickyselection.actions.UndoLastPaintAction" class="com.mnw.stickyselection.actions.UndoLastPaintAction"
-              text="Undo" description="Convert to multi-caret selection">
-          <keyboard-shortcut keymap="$default" first-keystroke="shift alt M"/>
+              text="Undo last selection" description="Deselect last added selection">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
       </action>
 
 
-      <action id="com.mnw.stickyselection.actions.NavigateToNextPaint" class="com.mnw.stickyselection.actions.NavigateToNextPaint"
-              text="Next" description="Convert to multi-caret selection">
-          <keyboard-shortcut keymap="$default" first-keystroke="shift alt N"/>
+      <action id="com.mnw.stickyselection.actions.NavigateToNextPaintInGroup" class="com.mnw.stickyselection.actions.NavigateToNextPaintInGroup"
+              text="Next" description="Navigate to next Paint">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt PERIOD"/>
+
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.NavigateToPreviousPaintInGroup" class="com.mnw.stickyselection.actions.NavigateToPreviousPaintInGroup"
+              text="Previous" description="Navigate to previous Paint">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt COMMA"/>
 
       </action>
 
       <action id="com.mnw.stickyselection.actions.PaintSelectionPopupAction" class="com.mnw.stickyselection.actions.PaintSelectionPopupAction"
-              text="ShowPopup" description="Convert to multi-caret selection">
+              text="Paint" description="Sticky Paint current selection">
           <keyboard-shortcut keymap="$default" first-keystroke="shift alt B"/>
       </action>
 
       <action id="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction" class="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction"
-              text="ShowPopup" description="Convert to multi-caret selection">
-          <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
+              text="Clear" description="Clear Paint Group">
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.NavigateToAnyNextPaint" class="com.mnw.stickyselection.actions.NavigateToAnyNextPaint"
+              text="Clear" description="Clear Paint Group">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt N"/>
+      </action>
+
+      <action id="com.mnw.stickyselection.actions.NavigateToAnyPreviousPaint" class="com.mnw.stickyselection.actions.NavigateToAnyPreviousPaint"
+              text="Clear" description="Clear Paint Group">
+          <keyboard-shortcut keymap="$default" first-keystroke="shift alt M"/>
       </action>
 
       <group>
           <separator/>
           <group id="StickyHighlight.Menu" text="StickyHighlight" popup="true">
-              <reference id="com.mnw.stickyselection.actions.PaintSelectionTo0Action" />
-              <reference id="com.mnw.stickyselection.actions.ClearPaintGroup0Action" />
               <reference id="com.mnw.stickyselection.actions.ClearAllPaintGroupAction" />
               <reference id="com.mnw.stickyselection.actions.ConvertPaintGroupToSelection" />
               <reference id="com.mnw.stickyselection.actions.UndoLastPaintAction" />
               <reference id="com.mnw.stickyselection.actions.PaintSelectionPopupAction" />
               <reference id="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction" />
-              <reference id="com.mnw.stickyselection.actions.NavigateToNextPaint" />
+              <reference id="com.mnw.stickyselection.actions.NavigateToAnyNextPaint" />
+              <reference id="com.mnw.stickyselection.actions.NavigateToAnyPreviousPaint" />
+              <reference id="com.mnw.stickyselection.actions.NavigateToNextPaintInGroup" />
+              <reference id="com.mnw.stickyselection.actions.NavigateToPreviousPaintInGroup" />
           </group>
           <add-to-group group-id="EditorPopupMenu" anchor="last"/>
       </group>

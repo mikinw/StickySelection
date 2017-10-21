@@ -1,13 +1,10 @@
 package com.mnw.stickyselection.preferences;
 
-import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.mnw.stickyselection.StickySelectionAppComponent;
-import com.mnw.stickyselection.actions.PaintSelectionPopupAction;
 import com.mnw.stickyselection.infrastructure.RandomPaintGroupData;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 import com.mnw.stickyselection.model.ValuesRepository;
@@ -37,6 +34,7 @@ public class StickySelectionPreferences implements Configurable {
     private ValuesRepository savedValues;
 
     private List<Integer> deletedDataBeans = new ArrayList<>();
+    private JCheckBox checkboxCycleThrough;
 
     public StickySelectionPreferences() {
         savedValues = ServiceManager.getService(ValuesRepository.class);
@@ -48,6 +46,9 @@ public class StickySelectionPreferences implements Configurable {
 
     public void setData(ValuesRepository savedValues) {
         this.savedValues = savedValues;
+
+        checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
+
         while (panelColorScheme.getComponentCount() > 1) {
 
             panelColorScheme.remove(1);
@@ -91,6 +92,10 @@ public class StickySelectionPreferences implements Configurable {
     @Override
     public boolean isModified() {
 //        System.out.println("isModified()");
+        if (savedValues.getIsCycleThroughEnabled() != checkboxCycleThrough.isSelected()) {
+            return true;
+        }
+
         final int paintGroupCount = savedValues.getPaintGroupCount();
         if (paintGroupCount != paintGroupRows.size()) {
             return true;
@@ -120,6 +125,12 @@ public class StickySelectionPreferences implements Configurable {
         panelColorScheme.setLayout(gridLayoutManager);
         mainPanel.add(panelColorScheme, BorderLayout.CENTER);
         panelColorScheme.setBorder(BorderFactory.createTitledBorder("Color Scheme"));
+
+        checkboxCycleThrough = new JCheckBox(
+                "When navigating to next selection, start from the beginning \n"
+                + "of the document if we reached the end (similar for \"previous\" navigation)");
+        mainPanel.add(checkboxCycleThrough, BorderLayout.NORTH);
+
 
 
         buttonAddSelectionGroup = new JButton();
@@ -154,6 +165,7 @@ public class StickySelectionPreferences implements Configurable {
             return;
         }
 //        System.out.println("apply()");
+        savedValues.setIsCycleThroughEnabled(checkboxCycleThrough.isSelected());
 
         savedValues.removeWithIds(deletedDataBeans);
         deletedDataBeans.clear();
@@ -182,6 +194,9 @@ public class StickySelectionPreferences implements Configurable {
         if (mainPanel == null) {
             return;
         }
+
+        checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
+
 //        System.out.println("reset()");
         while (paintGroupRows.size() > savedValues.getPaintGroupCount()) {
             panelColorScheme.remove(paintGroupRows.get(paintGroupRows.size() - 1).$$$getRootComponent$$$());

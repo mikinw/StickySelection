@@ -8,6 +8,8 @@ public class ClearPaintGroupPopupAction extends ShowPopupAction {
     @NotNull
     @Override
     protected PaintGroupListPopupStep createListStep() {
-        return new PaintGroupListPopupStep("Clear Paint Group", new PerformClearRunnable(stickySelectionEditorComponent));
+        return new PaintGroupListPopupStep(
+                "Clear Paint Group",
+                PerformClearRunnable.getFactory(stickySelectionEditorComponent));
     }
 }

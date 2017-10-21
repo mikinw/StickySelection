@@ -7,9 +7,6 @@ import com.mnw.stickyselection.model.PaintGroupDataBean;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO description of this class is missing
- */
 public class PaintGroup {
 
     protected final ArrayList<RangeHighlighter> highlighters;

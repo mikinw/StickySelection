@@ -13,4 +13,6 @@ public interface ValuesRepository {
     boolean hasDataBeanId(int dataBeanId);
     PaintGroupDataBean getPaintGroupPropertiesWithId(int dataBeanId);
     PaintGroupDataBean getLast();
+    boolean getIsCycleThroughEnabled();
+    void setIsCycleThroughEnabled(boolean isCycleThroughEnabled);
 }
