@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,7 +23,7 @@ public class StickySelectionPreferences implements Configurable {
 
     private java.util.List<PaintGroupRow> paintGroupRows = new ArrayList<>();
 
-    private JPanel mainPanel;
+    private JComponent mainPanel;
 
     private JButton buttonAddSelectionGroup;
 
@@ -35,13 +34,10 @@ public class StickySelectionPreferences implements Configurable {
 
     private List<Integer> deletedDataBeans = new ArrayList<>();
     private JCheckBox checkboxCycleThrough;
+    private JLabel refreshWarning;
 
     public StickySelectionPreferences() {
         savedValues = ServiceManager.getService(ValuesRepository.class);
-    }
-
-    public JPanel getMainPanel() {
-        return mainPanel;
     }
 
     public void setData(ValuesRepository savedValues) {
@@ -93,16 +89,19 @@ public class StickySelectionPreferences implements Configurable {
     public boolean isModified() {
 //        System.out.println("isModified()");
         if (savedValues.getIsCycleThroughEnabled() != checkboxCycleThrough.isSelected()) {
+            refreshWarning.setVisible(false);
             return true;
         }
 
         final int paintGroupCount = savedValues.getPaintGroupCount();
         if (paintGroupCount != paintGroupRows.size()) {
+            refreshWarning.setVisible(false);
             return true;
         }
 
         for (int i = 0; i < panelColorScheme.getComponentCount() - 1; i++) {
             if (paintGroupRows.get(i).isModified(savedValues.getPaintGroupProperties(i))) {
+                refreshWarning.setVisible(false);
                 return true;
             }
         }
@@ -118,25 +117,15 @@ public class StickySelectionPreferences implements Configurable {
 
 
     private void setupUI() {
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(3, 3));
-        panelColorScheme = new JPanel();
-        final LayoutManager gridLayoutManager = new BoxLayout(panelColorScheme, BoxLayout.PAGE_AXIS);
-        panelColorScheme.setLayout(gridLayoutManager);
-        mainPanel.add(panelColorScheme, BorderLayout.CENTER);
-        panelColorScheme.setBorder(BorderFactory.createTitledBorder("Color Scheme"));
+        final SettingsForm settingsForm = new SettingsForm();
+        mainPanel = settingsForm.$$$getRootComponent$$$();
 
-        checkboxCycleThrough = new JCheckBox(
-                "When navigating to next selection, start from the beginning \n"
-                + "of the document if we reached the end (similar for \"previous\" navigation)");
-        mainPanel.add(checkboxCycleThrough, BorderLayout.NORTH);
+        panelColorScheme = settingsForm.getPanelColorScheme();
+        panelColorScheme.setLayout(new BoxLayout(panelColorScheme, BoxLayout.Y_AXIS));
+        checkboxCycleThrough = settingsForm.getCheckboxCycleThrough();
+        buttonAddSelectionGroup = settingsForm.getButtonAddSelectionGroup();
+        refreshWarning = settingsForm.getRefreshWarning();
 
-
-
-        buttonAddSelectionGroup = new JButton();
-        buttonAddSelectionGroup.setText("Add New Paint Group");
-        buttonAddSelectionGroup.setHorizontalAlignment(SwingConstants.LEFT);
-        panelColorScheme.add(buttonAddSelectionGroup);
         buttonAddSelectionGroup.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -164,8 +153,11 @@ public class StickySelectionPreferences implements Configurable {
         if(mainPanel == null) {
             return;
         }
+
 //        System.out.println("apply()");
         savedValues.setIsCycleThroughEnabled(checkboxCycleThrough.isSelected());
+
+        refreshWarning.setVisible(true);
 
         savedValues.removeWithIds(deletedDataBeans);
         deletedDataBeans.clear();
@@ -185,8 +177,7 @@ public class StickySelectionPreferences implements Configurable {
                 .getComponent(StickySelectionAppComponent.class);
         applicationComponent.updateAllHighlighters();
 
-
-        //ActionManager.getInstance().registerAction("asdfasdf", new PaintSelectionPopupAction(), PluginId.getId("com.mnw.stickyselection"));
+        applicationComponent.updateRegisteredActions();
     }
 
     @Override
@@ -196,6 +187,7 @@ public class StickySelectionPreferences implements Configurable {
         }
 
         checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
+        refreshWarning.setVisible(false);
 
 //        System.out.println("reset()");
         while (paintGroupRows.size() > savedValues.getPaintGroupCount()) {

@@ -8,10 +8,20 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.mnw.stickyselection.StickySelectionAppComponent;
 import com.mnw.stickyselection.StickySelectionEditorComponent;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.Icon;
 
 public abstract class StickyEditorAction extends AnAction {
 
     protected StickySelectionEditorComponent stickySelectionEditorComponent;
+
+    public StickyEditorAction() {
+        super();
+    }
+    public StickyEditorAction(@Nullable String text, @Nullable String description, @Nullable Icon icon) {
+        super(text, description, icon);
+    }
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {

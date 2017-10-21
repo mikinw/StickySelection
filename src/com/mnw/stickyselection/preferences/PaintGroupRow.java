@@ -2,6 +2,7 @@ package com.mnw.stickyselection.preferences;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 
 import javax.swing.*;
@@ -94,21 +95,24 @@ public class PaintGroupRow {
     private void $$$setupUI$$$() {
         createUIComponents();
         rowPanel = new JPanel();
-        rowPanel.setLayout(new GridLayoutManager(2, 8, new Insets(0, 0, 0, 0), -1, -1));
+        rowPanel.setLayout(new GridLayoutManager(1, 10, new Insets(0, 0, 0, 0), -1, -1));
+        rowPanel.setMaximumSize(new Dimension(2147483647, 60));
+        rowPanel.setOpaque(true);
+        rowPanel.setPreferredSize(new Dimension(942, 48));
         final JLabel label1 = new JLabel();
         label1.setText("Paint Group Shortcut");
         rowPanel.add(label1,
                      new GridConstraints(0,
-                                         0,
+                                         1,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_WEST,
                                          GridConstraints.FILL_NONE,
                                          1,
-                                         GridConstraints.SIZEPOLICY_FIXED,
+                                         GridConstraints.SIZEPOLICY_WANT_GROW,
                                          null,
                                          new Dimension(122, 21),
-                                         null,
+                                         new Dimension(-1, 21),
                                          0,
                                          false));
         textFieldShortcut = new JTextField();
@@ -118,7 +122,7 @@ public class PaintGroupRow {
                 .setToolTipText("When the Paint Group popup is shown you can press this button to select this one.");
         rowPanel.add(textFieldShortcut,
                      new GridConstraints(0,
-                                         1,
+                                         2,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_CENTER,
@@ -127,13 +131,13 @@ public class PaintGroupRow {
                                          GridConstraints.SIZEPOLICY_FIXED,
                                          null,
                                          new Dimension(74, 31),
-                                         new Dimension(50, -1),
+                                         new Dimension(50, 31),
                                          0,
                                          false));
         colorButton.setToolTipText("Color of the highlight after you added a text to the paint group");
         rowPanel.add(colorButton,
                      new GridConstraints(0,
-                                         2,
+                                         3,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_CENTER,
@@ -152,7 +156,7 @@ public class PaintGroupRow {
                         + "selected.");
         rowPanel.add(checkBoxFrame,
                      new GridConstraints(0,
-                                         3,
+                                         4,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_WEST,
@@ -161,7 +165,7 @@ public class PaintGroupRow {
                                          GridConstraints.SIZEPOLICY_FIXED,
                                          null,
                                          null,
-                                         null,
+                                         new Dimension(-1, 31),
                                          0,
                                          false));
         textFieldLayer = new JTextField();
@@ -172,7 +176,7 @@ public class PaintGroupRow {
                         + " WARNING = 4000; ERROR = 5000; SELECTION = 6000;");
         rowPanel.add(textFieldLayer,
                      new GridConstraints(0,
-                                         5,
+                                         6,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_WEST,
@@ -181,7 +185,7 @@ public class PaintGroupRow {
                                          GridConstraints.SIZEPOLICY_FIXED,
                                          null,
                                          new Dimension(70, 31),
-                                         null,
+                                         new Dimension(-1, 31),
                                          0,
                                          false));
         checkBoxMarker = new JCheckBox();
@@ -189,7 +193,7 @@ public class PaintGroupRow {
         checkBoxMarker.setToolTipText("Show a marker in the marker bar to the right");
         rowPanel.add(checkBoxMarker,
                      new GridConstraints(0,
-                                         6,
+                                         7,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_CENTER,
@@ -198,7 +202,7 @@ public class PaintGroupRow {
                                          GridConstraints.SIZEPOLICY_FIXED,
                                          null,
                                          null,
-                                         null,
+                                         new Dimension(-1, 31),
                                          0,
                                          false));
         removeButton = new JButton();
@@ -206,7 +210,7 @@ public class PaintGroupRow {
         removeButton.setText("Remove");
         rowPanel.add(removeButton,
                      new GridConstraints(0,
-                                         7,
+                                         8,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_EAST,
@@ -222,7 +226,7 @@ public class PaintGroupRow {
         label2.setText("Highlight layer");
         rowPanel.add(label2,
                      new GridConstraints(0,
-                                         4,
+                                         5,
                                          1,
                                          1,
                                          GridConstraints.ANCHOR_WEST,
@@ -231,7 +235,37 @@ public class PaintGroupRow {
                                          GridConstraints.SIZEPOLICY_FIXED,
                                          null,
                                          null,
-                                         null,
+                                         new Dimension(-1, 31),
+                                         0,
+                                         false));
+        final Spacer spacer1 = new Spacer();
+        rowPanel.add(spacer1,
+                     new GridConstraints(0,
+                                         9,
+                                         1,
+                                         1,
+                                         GridConstraints.ANCHOR_CENTER,
+                                         GridConstraints.FILL_HORIZONTAL,
+                                         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                                         1,
+                                         new Dimension(4, -1),
+                                         new Dimension(8, -1),
+                                         new Dimension(8, -1),
+                                         0,
+                                         false));
+        final Spacer spacer2 = new Spacer();
+        rowPanel.add(spacer2,
+                     new GridConstraints(0,
+                                         0,
+                                         1,
+                                         1,
+                                         GridConstraints.ANCHOR_CENTER,
+                                         GridConstraints.FILL_HORIZONTAL,
+                                         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                                         1,
+                                         new Dimension(4, -1),
+                                         new Dimension(8, -1),
+                                         new Dimension(8, -1),
                                          0,
                                          false));
     }

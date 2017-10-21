@@ -32,16 +32,24 @@
 
     <!-- done prev/next refactor, -->
     <!-- done settings -> editor, -->
-    <!-- TODO add actions dynamically -->
+    <!-- done add actions dynamically -->
     <!-- TODO performance improvement could be to replace arrayList of RangeHighlighters to SortedTree of RangeHighlighters -->
     <!-- partially done TODO disable undo if it's not available -->
-    <!-- done bug: navigate down won't actually find the closest paint,-->
-    <!-- done convert nem letezot exception-->
+    <!-- done color icons in settings -->
+    email válaszok
+    donate gomb
+    github leírás
+
+    release
+    <!-- done bug: navigate down won't actually find the closest paint, -->
+    <!-- done bug: error when trying to convert without any sticky selection -->
     <!-- done bug: the beans are removed, created in valueRepository as the settings screen adds and removes lines -->
 
 
   <change-notes><![CDATA[
+      v1.0 this is the first release<br>
       v2.0-pre this is the first release<br>
+      v2.0-pre redesign and lots of new features<br>
       ]]>
   </change-notes>
 
