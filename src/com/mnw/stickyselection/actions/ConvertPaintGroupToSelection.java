@@ -6,6 +6,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConvertPaintGroupToSelection extends ShowPopupAction {
 
+    @Override
+    protected void autoPerformPopupAction() {
+        stickySelectionEditorComponent.convertPaintGroupToSelection(0);
+    }
+
     @NotNull
     @Override
     protected PaintGroupListPopupStep createListStep() {

@@ -65,9 +65,9 @@ public class SettingsForm {
                                           0,
                                           false));
         refreshWarning = new JLabel();
-        refreshWarning.setForeground(new Color(-4493708));
+        refreshWarning.setForeground(new Color(-4503987));
         refreshWarning.setText(
-                "In order to make actions correcly reflected in the Keymap section, reopening settings may be "
+                "In order to make actions correcly reflected in the Keymap section, reopening Settings may be "
                         + "necessary.");
         refreshWarning.setVisible(false);
         mainPanel.add(refreshWarning,

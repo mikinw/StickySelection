@@ -5,6 +5,11 @@ import com.mnw.stickyselection.infrastructure.PerformStickyPaintRunnable;
 import org.jetbrains.annotations.NotNull;
 
 public class PaintSelectionPopupAction extends ShowPopupAction {
+    @Override
+    protected void autoPerformPopupAction() {
+        stickySelectionEditorComponent.paintSelection(0);
+    }
+
     @NotNull
     @Override
     protected PaintGroupListPopupStep createListStep() {
