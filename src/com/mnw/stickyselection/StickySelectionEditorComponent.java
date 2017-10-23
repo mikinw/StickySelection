@@ -11,18 +11,24 @@ import com.intellij.openapi.editor.event.CaretListener;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.markup.*;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.jgoodies.common.base.Strings;
 import com.mnw.stickyselection.actions.UndoLastPaintAction;
 import com.mnw.stickyselection.infrastructure.*;
-import com.mnw.stickyselection.model.PaintGroupDataBean;
-import com.mnw.stickyselection.model.ValuesRepository;
+import com.mnw.stickyselection.model.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class StickySelectionEditorComponent {
 
     private static final int INITIAL_CAPACITY = 16;
     private final Editor editor;
+    private final String filePath;
+    private final Project project;
     protected List<PaintGroup> paintGroups = new ArrayList<>();
 
     private List<RangeHighlighter> undoList = new ArrayList<>();
@@ -33,6 +39,12 @@ public class StickySelectionEditorComponent {
 
     public StickySelectionEditorComponent(Editor editor) {
         this.editor = editor;
+
+        final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
+        filePath = file != null ? file.getPath() : null;
+        project = editor.getProject();
+
+
         ValuesRepository savedValues = ServiceManager.getService(ValuesRepository.class);
 
         for (int i = 0; i < savedValues.getPaintGroupCount(); i++) {
@@ -56,7 +68,6 @@ public class StickySelectionEditorComponent {
 
             }
         });
-        setUndoEnabled(false);
 
     }
 
@@ -75,53 +86,93 @@ public class StickySelectionEditorComponent {
 
     public void paintSelection(int paintGroup) {
         PaintGroupDataBean paintGroupProperties = ServiceManager.getService(ValuesRepository.class).getPaintGroupProperties(paintGroup);
-        if (Strings.isEmpty(editor.getSelectionModel().getSelectedText())) {
-            editor.getSelectionModel().selectWordAtCaret(true);
+
+        if (editor.getCaretModel().getCaretCount() > 1) {
+            final List<CaretState> caretsAndSelections = editor.getCaretModel().getCaretsAndSelections();
+            final TextAttributes textAttributes = createTextAttributes(paintGroupProperties);
+            for (CaretState caretsAndSelection : caretsAndSelections) {
+                final LogicalPosition selectionStart = caretsAndSelection.getSelectionStart();
+                final LogicalPosition selectionEnd = caretsAndSelection.getSelectionEnd();
+                if (selectionStart == null || selectionEnd == null) {
+                    continue;
+                }
+                final int selectionStartOffset = editor.logicalPositionToOffset(selectionStart);
+                final int selectionEndOffset = editor.logicalPositionToOffset(selectionEnd);
+                if (selectionStartOffset == selectionEndOffset) {
+                    continue;
+                }
+                addRangeHighlighter(paintGroup, paintGroupProperties, textAttributes, selectionStartOffset, selectionEndOffset, true);
+
+            }
+        } else {
+            if (Strings.isEmpty(editor.getSelectionModel().getSelectedText())) {
+                editor.getSelectionModel().selectWordAtCaret(true);
+            }
+            final String selectedText = editor.getSelectionModel().getSelectedText();
+            if (Strings.isEmpty(selectedText)) {
+                return;
+            }
+
+
+            clearUndoFields();
+            lastPaintedGroup = paintGroup;
+
+            final int lengthOfSelection = selectedText.length();
+            final String wholeText = editor.getDocument().getText();
+
+            ArrayList<Integer> selectedMatchStart = getSelectionMatchesStart(wholeText, selectedText);
+
+            final TextAttributes textAttributes = createTextAttributes(paintGroupProperties);
+            for (Integer index : selectedMatchStart) {
+                addRangeHighlighter(paintGroup, paintGroupProperties, textAttributes, index, index + lengthOfSelection, true);
+            }
         }
-        final String selectedText = editor.getSelectionModel().getSelectedText();
-        if (Strings.isEmpty(selectedText)) {
-            return;
-        }
 
+        setUndoEnabled(!undoList.isEmpty());
+        paintGroups.get(paintGroup).highlighters.sort((o1, o2)-> ((Integer)o1.getStartOffset()).compareTo(o2.getStartOffset()));
 
-        clearUndoFields();
-        lastPaintedGroup = paintGroup;
+    }
 
-        final int lengthOfSelection = selectedText.length();
-        final String wholeText = editor.getDocument().getText();
-
-        ArrayList<Integer> selectedMatchStart = getSelectionMatchesStart(wholeText, selectedText);
-
+    @NotNull
+    private TextAttributes createTextAttributes(PaintGroupDataBean paintGroupProperties) {
         final TextAttributes textAttributes = new TextAttributes();
         textAttributes.setBackgroundColor(paintGroupProperties.getColor());
         if (paintGroupProperties.isFrameNeeded()) {
             textAttributes.setEffectType(EffectType.BOXED);
             textAttributes.setEffectColor(paintGroupProperties.getColor());
         }
-        for (Integer index : selectedMatchStart) {
-            final RangeHighlighter rangeHighlighter = editor.getMarkupModel().addRangeHighlighter(
-                    index,
-                    index + lengthOfSelection,
-                    paintGroupProperties.getHighlightLayer(),
-                    textAttributes,
-                    HighlighterTargetArea.EXACT_RANGE);
-            if (paintGroupProperties.isMarkerNeeded()) {
-                rangeHighlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
-            }
+        return textAttributes;
+    }
 
-            // TODO: 2017. 10. 17. don't add the same (start, end, paintgroup) twice
-
-            //if (paintGroups[paintGroup].has(rangeHighlighter)) {
-            //    editor.getMarkupModel().removeHighlighter(rangeHighlighter);
-            //} else {
-
-            undoList.add(rangeHighlighter);
-            paintGroups.get(paintGroup).add(rangeHighlighter);
+    private void addRangeHighlighter(int paintGroup, PaintGroupDataBean paintGroupProperties,
+                                     TextAttributes textAttributes, int startOffset, int endOffset, boolean persist) {
+        final RangeHighlighter rangeHighlighter = editor.getMarkupModel().addRangeHighlighter(
+                startOffset,
+                endOffset,
+                paintGroupProperties.getHighlightLayer(),
+                textAttributes,
+                HighlighterTargetArea.EXACT_RANGE);
+        if (paintGroupProperties.isMarkerNeeded()) {
+            rangeHighlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
         }
 
-        setUndoEnabled(!undoList.isEmpty());
-        paintGroups.get(paintGroup).highlighters.sort((o1, o2)-> ((Integer)o1.getStartOffset()).compareTo(o2.getStartOffset()));
+        // TODO: 2017. 10. 17. don't add the same (start, end, paintgroup) twice
 
+        //if (paintGroups[paintGroup].has(rangeHighlighter)) {
+        //    editor.getMarkupModel().removeHighlighter(rangeHighlighter);
+        //} else {
+
+        undoList.add(rangeHighlighter);
+        paintGroups.get(paintGroup).add(rangeHighlighter);
+
+        if (persist) {
+            final StoredHighlightsRepository projectSettings = ServiceManager
+                    .getService(project, StoredHighlightsRepository.class);
+            projectSettings.addOneHighlight(filePath,
+                                            paintGroup,
+                                            rangeHighlighter.getStartOffset(),
+                                            rangeHighlighter.getEndOffset());
+        }
     }
 
     private void setUndoEnabled(boolean enabled) {
@@ -151,14 +202,52 @@ public class StickySelectionEditorComponent {
         return selectedMatchStart;
     }
 
-    public void clearPaintGroup(int paintGroup) {
-        paintGroups.get(paintGroup).clear(editor.getMarkupModel());
+    public void loadHighlights(Map<Integer, EditorHighlightsForPaintGroup> editorHighlights) {
+
+        final int documentLength = editor.getDocument().getTextLength();
+        for (Integer paintGroup : editorHighlights.keySet()) {
+            final List<HighlightOffset> highlightsForPaintGroup = editorHighlights.get(paintGroup);
+            if (highlightsForPaintGroup == null) {
+                continue;
+            }
+
+            final ValuesRepository valuesRepository = ServiceManager.getService(ValuesRepository.class);
+            if (valuesRepository.getPaintGroupCount() - 1 < paintGroup) {
+                final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
+                projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
+                continue;
+            }
+            PaintGroupDataBean paintGroupProperties = valuesRepository.getPaintGroupProperties(paintGroup);
+
+            final TextAttributes textAttributes = createTextAttributes(paintGroupProperties);
+
+            for (HighlightOffset editorHighlight : highlightsForPaintGroup) {
+                if (editorHighlight.start > documentLength) {
+                    continue;
+                }
+                addRangeHighlighter(
+                        paintGroup,
+                        paintGroupProperties,
+                        textAttributes,
+                        editorHighlight.start,
+                        Math.min(editorHighlight.end, documentLength),
+                        false
+                );
+            }
+        }
+        clearUndoFields();
     }
 
 
+    public void clearPaintGroup(int paintGroup) {
+        paintGroups.get(paintGroup).clear(editor.getMarkupModel());
+        final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
+        projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
+    }
+
     public void clearAll() {
-        for (PaintGroup paintGroup : paintGroups) {
-            paintGroup.clear(editor.getMarkupModel());
+        for (int i = 0; i < paintGroups.size(); i++) {
+            clearPaintGroup(i);
         }
 
     }
@@ -217,6 +306,8 @@ public class StickySelectionEditorComponent {
             paintGroups.get(lastPaintedGroup).highlighters.remove(rangeHighlighter);
             editor.getMarkupModel().removeHighlighter(rangeHighlighter);
         }
+        final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
+        projectSettings.removeLastNOfPaintGroup(filePath, lastPaintedGroup, undoList.size());
         clearUndoFields();
     }
 
@@ -296,6 +387,7 @@ public class StickySelectionEditorComponent {
         moveCaret(currentBest.paintGroup, currentBest.getCaretOffset());
     }
 
+
     private boolean moveCaret(int currentPaintGroup, int suggestedCaretPos) {
         if (suggestedCaretPos >= 0) {
             editor.getCaretModel().getPrimaryCaret().moveToOffset(suggestedCaretPos);
@@ -306,12 +398,26 @@ public class StickySelectionEditorComponent {
         return false;
     }
 
-
     private void clearUndoFields() {
         undoList.clear();
         lastPaintedGroup = -1;
         setUndoEnabled(false);
 
+    }
+
+    public List<EditorHighlightsForPaintGroup> saveHighlights() {
+        List<EditorHighlightsForPaintGroup> ret = new ArrayList<>();
+        for (int paintGroup = 0; paintGroup < paintGroups.size(); paintGroup++) {
+            EditorHighlightsForPaintGroup highlightsForPaintGroup = new EditorHighlightsForPaintGroup();
+
+            highlightsForPaintGroup.addAll(
+                    paintGroups.get(paintGroup).highlighters.stream()
+                            .map(rangeHighlighter->new HighlightOffset(rangeHighlighter.getStartOffset(),
+                                                                       rangeHighlighter.getEndOffset()))
+                            .collect(Collectors.toList()));
+            ret.add(highlightsForPaintGroup);
+        }
+        return ret;
     }
 
     public static class CurrentBest {

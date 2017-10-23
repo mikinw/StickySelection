@@ -35,6 +35,7 @@ public class StickySelectionPreferences implements Configurable {
     private List<Integer> deletedDataBeans = new ArrayList<>();
     private JCheckBox checkboxCycleThrough;
     private JLabel refreshWarning;
+    private JCheckBox checkboxPersistHighlights;
 
     public StickySelectionPreferences() {
         savedValues = ServiceManager.getService(ValuesRepository.class);
@@ -44,6 +45,7 @@ public class StickySelectionPreferences implements Configurable {
         this.savedValues = savedValues;
 
         checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
+        checkboxPersistHighlights.setSelected(savedValues.getPersistHighlights());
 
         while (panelColorScheme.getComponentCount() > 1) {
 
@@ -93,6 +95,11 @@ public class StickySelectionPreferences implements Configurable {
             return true;
         }
 
+        if (savedValues.getPersistHighlights() != checkboxPersistHighlights.isSelected()) {
+            refreshWarning.setVisible(false);
+            return true;
+        }
+
         final int paintGroupCount = savedValues.getPaintGroupCount();
         if (paintGroupCount != paintGroupRows.size()) {
             refreshWarning.setVisible(false);
@@ -125,6 +132,7 @@ public class StickySelectionPreferences implements Configurable {
         checkboxCycleThrough = settingsForm.getCheckboxCycleThrough();
         buttonAddSelectionGroup = settingsForm.getButtonAddSelectionGroup();
         refreshWarning = settingsForm.getRefreshWarning();
+        checkboxPersistHighlights = settingsForm.getCheckBoxPersistHighlights();
 
         buttonAddSelectionGroup.addActionListener(new ActionListener() {
             @Override
@@ -156,6 +164,7 @@ public class StickySelectionPreferences implements Configurable {
 
 //        System.out.println("apply()");
         savedValues.setIsCycleThroughEnabled(checkboxCycleThrough.isSelected());
+        savedValues.setPersistHighlights(checkboxPersistHighlights.isSelected());
 
         refreshWarning.setVisible(true);
 
@@ -187,6 +196,7 @@ public class StickySelectionPreferences implements Configurable {
         }
 
         checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
+        checkboxPersistHighlights.setSelected(savedValues.getPersistHighlights());
         refreshWarning.setVisible(false);
 
 //        System.out.println("reset()");

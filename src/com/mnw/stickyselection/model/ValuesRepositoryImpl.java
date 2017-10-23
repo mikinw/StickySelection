@@ -26,7 +26,8 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
     private int idStore = 1;
 
     private boolean isPluginEnabled;
-    private boolean isCycleThroughEnabled;
+    private boolean isCycleThroughEnabled = true;
+    private boolean isPersistHighlights = true;
 
     public ValuesRepositoryImpl() {
     }
@@ -112,6 +113,16 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
     @Override
     public void setIsCycleThroughEnabled(boolean isCycleThroughEnabled) {
         this.isCycleThroughEnabled = isCycleThroughEnabled;
+    }
+
+    @Override
+    public boolean getPersistHighlights() {
+        return isPersistHighlights;
+    }
+
+    @Override
+    public void setPersistHighlights(boolean persistHighlights) {
+        isPersistHighlights = persistHighlights;
     }
 
     @Nullable

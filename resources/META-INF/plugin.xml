@@ -63,13 +63,16 @@
     <!-- done settings -> editor, -->
     <!-- done add actions dynamically -->
     <!-- TODO performance improvement could be to replace arrayList of RangeHighlighters to SortedTree of RangeHighlighters -->
-    <!-- partially done TODO disable undo if it's not available -->
+    <!-- done disable undo if it's not available -->
     <!-- done select paint group if only one exists -->
+    <!-- done multi caret selection does not search for text matches, only converts selections to paint -->
 
     <!-- done color icons in settings -->
     <!-- done bug: navigate down won't actually find the closest paint, -->
     <!-- done bug: error when trying to convert without any sticky selection -->
     <!-- done bug: the beans are removed, created in valueRepository as the settings screen adds and removes lines -->
+    <!-- done bug: does not persist highlights on exit -->
+    <!-- done bug: can double store highlights -->
 
 
   <change-notes><![CDATA[
@@ -166,6 +169,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
       <applicationConfigurable instance="com.mnw.stickyselection.preferences.StickySelectionPreferences"/>
+      <projectService serviceImplementation="com.mnw.stickyselection.model.StoredHighlightsRepository"/>
       <applicationService serviceInterface="com.mnw.stickyselection.model.ValuesRepository" serviceImplementation="com.mnw.stickyselection.model.ValuesRepositoryImpl" />
   </extensions>
 </idea-plugin>

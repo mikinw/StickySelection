@@ -39,3 +39,7 @@ Default shortcuts (but I highly encourage to define your own or at least check w
  * Press *Ctrl + Alt + semicolon* to navigate to previous Paint in the current Paint Group.
 
 Note: control + alt on Mac is (I guess) meta + alt
+
+If you find this plugin useful, please consider inviting me for a beer.
+I develop this plugin in my free time and I'm more motivated when I have a beer on desk :-)
+http://PayPal.Me/mnwDevelopment/

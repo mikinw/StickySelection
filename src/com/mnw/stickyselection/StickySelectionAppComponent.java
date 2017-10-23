@@ -10,6 +10,9 @@ import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.ColorIcon;
 import com.mnw.stickyselection.actions.ClearPaintGroupInstantAction;
 import com.mnw.stickyselection.actions.ConvertPaintGroupInstantAction;
@@ -20,15 +23,14 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 
-public class StickySelectionAppComponent implements ApplicationComponent, EditorFactoryListener,
-        Disposable {
+public class StickySelectionAppComponent implements ApplicationComponent, EditorFactoryListener, Disposable {
 
     private static final String PLUGIN_ACTION_ID = "com.mnw.stickyselection";
     private static final String ACTION_ID_PREFIX = "com.mnw.stickyselection.actions.";
     private static final int ACTION_ICON_SIZE = 12;
-    protected HashMap<Editor, StickySelectionEditorComponent> editors = new HashMap<>();
+    private HashMap<Editor, StickySelectionEditorComponent> editors = new HashMap<>();
 
     private ValuesRepository savedValues;
 
@@ -59,21 +61,60 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
     @Override
     public void editorCreated(@NotNull EditorFactoryEvent editorFactoryEvent) {
         Editor editor = editorFactoryEvent.getEditor();
-        if(editor.getProject() == null) {
-            return;
-        }
 
         StickySelectionEditorComponent editorHighlighter = new StickySelectionEditorComponent(editor);
         editors.put(editorFactoryEvent.getEditor(), editorHighlighter);
+
+        final Project project = editor.getProject();
+        if (project == null) {
+            return;
+        }
+
+        final StoredHighlightsRepository projectSettings = ServiceManager
+                .getService(project, StoredHighlightsRepository.class);
+
+        if (ServiceManager.getService(ValuesRepository.class).getPersistHighlights()) {
+            final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
+            if (file == null) {
+                return;
+            }
+            final String path = file.getPath();
+
+            final Map<Integer, EditorHighlightsForPaintGroup> editorHighlights = projectSettings
+                    .getEditorHighlights(path);
+
+
+            editorHighlighter.loadHighlights(editorHighlights);
+        } else {
+            projectSettings.clear();
+        }
+
 
     }
 
     @Override
     public void editorReleased(@NotNull EditorFactoryEvent editorFactoryEvent) {
+        // TODO: 2017. 10. 23. do I need to save the whole (not just the diff, like during actions), to make sure things are saved correctly?
+//        Editor editor = editorFactoryEvent.getEditor();
+//        final Project project = editor.getProject();
+//        if (project == null) {
+//            return;
+//        }
+//        final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
+
+
         StickySelectionEditorComponent editorHighlighter = editors.remove(editorFactoryEvent.getEditor());
         if(editorHighlighter == null) {
             return;
         }
+
+//        final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
+//        if (file == null) {
+//            return;
+//        }
+//        final String path = file.getPath();
+
+        //projectSettings.addOrUpdateEditorHighlights(editorHighlighter.saveHighlights(), path);
 
         editorHighlighter.dispose();
     }
@@ -136,11 +177,6 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
         }
     }
 
-    private interface InstantActionFactory {
-        @NotNull
-        StickyEditorAction createInstantAction(int paintGroup, Icon actionIcon);
-    }
-
     @NotNull
     private Icon createActionIcon(int i) {
         final Color color = savedValues.getPaintGroupProperties(i).getColor();
@@ -154,5 +190,10 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
     @Override
     public void dispose() {
         disposeComponent();
+    }
+
+    private interface InstantActionFactory {
+        @NotNull
+        StickyEditorAction createInstantAction(int paintGroup, Icon actionIcon);
     }
 }

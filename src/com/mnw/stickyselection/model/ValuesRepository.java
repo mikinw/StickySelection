@@ -15,4 +15,6 @@ public interface ValuesRepository {
     PaintGroupDataBean getLast();
     boolean getIsCycleThroughEnabled();
     void setIsCycleThroughEnabled(boolean isCycleThroughEnabled);
+    boolean getPersistHighlights();
+    void setPersistHighlights(boolean persistHighlights);
 }
