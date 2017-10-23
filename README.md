@@ -7,7 +7,7 @@ You can define an arbitrary number of Paint Groups. Selecting the appropriate ed
 (keystroke or context menu), the all occurrences of currently selected text will be added to
 the Paint Group and will be permanently highlighted (until you clear the selection with an
 other editor action). So you can have different text fragments to be selected with the same
-Paint Group.
+Paint Group. The Paint Groups are kept when IntelliJ is closed.
 
  * You can set different colours for each Paint Group
  * You can set a marker to be visible on the right side of the editor
@@ -17,7 +17,7 @@ Paint Group.
  * You can cycle through each element in a given Paint Group or in all Paint Groups
  * Keymap actions are added dynamically for paint, clear and convert as you add more Paint Group
 
-Undo works up until the document is changed.
+Undo works up until the document is changed, or the file is closed.
 Navigating in a specific Paint Group works like this:
  * If the caret is inside a Paint Group upcoming navigation will move caret among the Paints in that Paint Group.
  * If the caret is not inside a Paint Group the plugin will find the closest selection (in the direction the

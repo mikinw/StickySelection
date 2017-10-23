@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.mnw.stickyselection</id>
   <name>Sticky Selection</name>
-  <version>2.0</version>
+  <version>2.1</version>
   <vendor email="mikinw.development@gmail.com" url="http://mikinw.blogspot.co.uk">MikiNW</vendor>
 
   <description><![CDATA[
@@ -11,7 +11,7 @@
       (keystroke or context menu), the all occurrences of currently selected text will be added to
       the Paint Group and will be permanently highlighted (until you clear the selection with an
       other editor action). So you can have different text fragments to be selected with the same
-      Paint Group.
+      Paint Group. The Paint Groups are kept when IntelliJ is closed.
 
       <ul>
       <li>You can set different colours for each Paint Group
@@ -23,7 +23,7 @@
       <li>Keymap actions are added dynamically for paint, clear and convert as you add more Paint Group
       </ul>
 
-      <br>Undo works up until the document is changed.
+      <br>Undo works up until the document is changed, or the editor is closed.
       Navigating in a specific Paint Group works like this:
       <ul>
       <li>If the caret is inside a Paint Group upcoming navigation will move caret among the Paints in that Paint Group.
