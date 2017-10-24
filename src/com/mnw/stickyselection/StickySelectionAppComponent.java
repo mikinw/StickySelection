@@ -1,16 +1,20 @@
 package com.mnw.stickyselection;
 
+import com.intellij.AppTopics;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.ColorIcon;
@@ -60,7 +64,7 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
 
     @Override
     public void editorCreated(@NotNull EditorFactoryEvent editorFactoryEvent) {
-        Editor editor = editorFactoryEvent.getEditor();
+        final Editor editor = editorFactoryEvent.getEditor();
 
         StickySelectionEditorComponent editorHighlighter = new StickySelectionEditorComponent(editor);
         editors.put(editorFactoryEvent.getEditor(), editorHighlighter);
@@ -89,32 +93,38 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
             projectSettings.clear();
         }
 
+        ApplicationManager.getApplication().getMessageBus().connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, new FileDocumentManagerListener() {
+            @Override
+            public void beforeAllDocumentsSaving() {
+                editors.values().forEach(StickySelectionEditorComponent::persistHighlights);
+            }
 
+            @Override
+            public void beforeDocumentSaving(@NotNull Document document) {
+                for (StickySelectionEditorComponent stickySelectionEditorComponent : editors.values()) {
+                    stickySelectionEditorComponent.persistHighlights(document);
+                }
+            }
+
+            @Override
+            public void beforeFileContentReload(VirtualFile virtualFile, @NotNull Document document) {}
+            @Override
+            public void fileWithNoDocumentChanged(@NotNull VirtualFile virtualFile) {}
+            @Override
+            public void fileContentReloaded(@NotNull VirtualFile virtualFile, @NotNull Document document) {}
+            @Override
+            public void fileContentLoaded(@NotNull VirtualFile virtualFile, @NotNull Document document) {}
+            @Override
+            public void unsavedDocumentsDropped() {}
+        });
     }
 
     @Override
     public void editorReleased(@NotNull EditorFactoryEvent editorFactoryEvent) {
-        // TODO: 2017. 10. 23. do I need to save the whole (not just the diff, like during actions), to make sure things are saved correctly?
-//        Editor editor = editorFactoryEvent.getEditor();
-//        final Project project = editor.getProject();
-//        if (project == null) {
-//            return;
-//        }
-//        final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
-
-
         StickySelectionEditorComponent editorHighlighter = editors.remove(editorFactoryEvent.getEditor());
         if(editorHighlighter == null) {
             return;
         }
-
-//        final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
-//        if (file == null) {
-//            return;
-//        }
-//        final String path = file.getPath();
-
-        //projectSettings.addOrUpdateEditorHighlights(editorHighlighter.saveHighlights(), path);
 
         editorHighlighter.dispose();
     }

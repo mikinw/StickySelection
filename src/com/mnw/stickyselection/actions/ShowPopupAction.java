@@ -1,5 +1,8 @@
 package com.mnw.stickyselection.actions;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.components.ServiceManager;
@@ -25,12 +28,20 @@ public abstract class ShowPopupAction extends StickyEditorAction {
 
     @Override
     protected void actionImpl() {
-        if (ServiceManager.getService(ValuesRepository.class).getPaintGroupCount() > 1) {
+        final int paintGroupCount = ServiceManager.getService(ValuesRepository.class).getPaintGroupCount();
+        if (paintGroupCount > 1) {
             JBPopupFactory.getInstance()
                     .createListPopup(createListStep())
                     .showInBestPositionFor(editor);
-        } else {
+        } else if (paintGroupCount == 1) {
             autoPerformPopupAction();
+        } else {
+            Notification notification = new Notification(
+                    "StickySelection warnings",
+                    "No Paint Group is defined",
+                    "Please open Settings | Other | Sticky Selection <br> and add at least one.",
+                    NotificationType.WARNING);
+            Notifications.Bus.notify(notification);
         }
 
     }

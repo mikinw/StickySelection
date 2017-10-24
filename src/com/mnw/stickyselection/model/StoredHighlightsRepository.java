@@ -40,11 +40,11 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
         return editorHighlightsOfAllPaintGroups != null ? editorHighlightsOfAllPaintGroups : new HashMap<>();
     }
 
-    /*@Transient
-    public void addOrUpdateEditorHighlights(Map<Integer, EditorHighlightsForPaintGroup> editorHighlightsOfAllPaintGroups, String relativePath) {
+    @Transient
+    public void addOrUpdateEditorHighlights(PaintGroupHighlightMap editorHighlightsOfAllPaintGroups, String relativePath) {
         editorHighlights.remove(relativePath);
         editorHighlights.put(relativePath, editorHighlightsOfAllPaintGroups);
-    }*/
+    }
 
     @Transient
     public void addOneHighlight(String filePath, int paintGroup, int startOffset, int endOffset) {

@@ -1,6 +1,9 @@
 package com.mnw.stickyselection;
 
 import com.intellij.codeInsight.hint.HintManager;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -21,6 +24,7 @@ import com.mnw.stickyselection.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class StickySelectionEditorComponent {
@@ -35,6 +39,7 @@ public class StickySelectionEditorComponent {
     private int lastPaintedGroup;
 
     private int navigationGroup = -1;
+    private boolean documentModified = false;
 
 
     public StickySelectionEditorComponent(Editor editor) {
@@ -52,6 +57,7 @@ public class StickySelectionEditorComponent {
         }
 
         editor.getDocument().addDocumentListener(new ClearUndoFieldsWhenChanged());
+        editor.getDocument().addDocumentListener(new SetModifiedFlag());
         editor.getCaretModel().addCaretListener(new CaretListener() {
             @Override
             public void caretPositionChanged(CaretEvent caretEvent) {
@@ -298,7 +304,12 @@ public class StickySelectionEditorComponent {
 
     public void undoLastPaint() {
         if (undoList.isEmpty()) {
-            HintManager.getInstance().showInformationHint(editor, "There is nothing to undo.\nMaybe because the document has changed.");
+            Notification notification = new Notification(
+                    "StickySelection warnings",
+                    "There is nothing to undo.",
+                    "Maybe because the document has changed.",
+                    NotificationType.INFORMATION);
+            Notifications.Bus.notify(notification);
             setUndoEnabled(false);
             return;
         }
@@ -405,8 +416,8 @@ public class StickySelectionEditorComponent {
 
     }
 
-    public List<EditorHighlightsForPaintGroup> saveHighlights() {
-        List<EditorHighlightsForPaintGroup> ret = new ArrayList<>();
+    public PaintGroupHighlightMap highlightsToMap() {
+        final PaintGroupHighlightMap ret = new PaintGroupHighlightMap();
         for (int paintGroup = 0; paintGroup < paintGroups.size(); paintGroup++) {
             EditorHighlightsForPaintGroup highlightsForPaintGroup = new EditorHighlightsForPaintGroup();
 
@@ -415,9 +426,33 @@ public class StickySelectionEditorComponent {
                             .map(rangeHighlighter->new HighlightOffset(rangeHighlighter.getStartOffset(),
                                                                        rangeHighlighter.getEndOffset()))
                             .collect(Collectors.toList()));
-            ret.add(highlightsForPaintGroup);
+            ret.put(paintGroup, highlightsForPaintGroup);
         }
         return ret;
+    }
+
+    public void persistHighlights() {
+        if (documentModified) {
+            final StoredHighlightsRepository projectSettings = ServiceManager
+                    .getService(project, StoredHighlightsRepository.class);
+
+            final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
+            if (file == null) {
+                return;
+            }
+            final String path = file.getPath();
+
+            projectSettings.addOrUpdateEditorHighlights(highlightsToMap(), path);
+
+            documentModified = false;
+        }
+
+    }
+
+    public void persistHighlights(Document document) {
+        if (document == editor.getDocument()) {
+            persistHighlights();
+        }
     }
 
     public static class CurrentBest {
@@ -461,5 +496,15 @@ public class StickySelectionEditorComponent {
             clearUndoFields();
         }
 
+    }
+
+    private class SetModifiedFlag implements DocumentListener {
+        @Override
+        public void beforeDocumentChange(DocumentEvent documentEvent) {}
+
+        @Override
+        public void documentChanged(DocumentEvent documentEvent) {
+            documentModified = true;
+        }
     }
 }
