@@ -2,7 +2,7 @@ package com.mnw.stickyselection.infrastructure;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.popup.*;
-import com.jgoodies.common.base.Strings;
+import com.intellij.openapi.util.text.StringUtil;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 import com.mnw.stickyselection.model.ValuesRepository;
 import com.mnw.stickyselection.preferences.ColorImage;
@@ -110,7 +110,7 @@ public class PaintGroupListPopupStep implements ListPopupStep<PaintGroupDataBean
 
             @Override
             public String getTextFor(PaintGroupDataBean paintGroupDataBean) {
-                return " " + (Strings.isEmpty(paintGroupDataBean.getShortcut()) ? "*" : paintGroupDataBean.getShortcut());
+                return " " + (StringUtil.isEmpty(paintGroupDataBean.getShortcut()) ? "*" : paintGroupDataBean.getShortcut());
             }
 
             @NotNull

@@ -7,12 +7,8 @@ import com.mnw.stickyselection.model.PaintGroupDataBean;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Date;
-import java.util.Random;
 
 public class PaintGroupRow {
     private ColorButton colorButton;
@@ -44,7 +40,7 @@ public class PaintGroupRow {
     public void getData(PaintGroupDataBean data) {
         data.setShortcut(textFieldShortcut.getText());
         data.setFrameNeeded(checkBoxFrame.isSelected());
-        data.setLayer(Integer.parseUnsignedInt(textFieldLayer.getText()));
+        data.setLayer(Integer.parseInt(textFieldLayer.getText()));
         data.setMarkerNeeded(checkBoxMarker.isSelected());
         data.setColor(colorButton.getColor());
     }

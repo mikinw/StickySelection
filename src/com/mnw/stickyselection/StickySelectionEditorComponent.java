@@ -16,16 +16,15 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.markup.*;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.jgoodies.common.base.Strings;
 import com.mnw.stickyselection.actions.UndoLastPaintAction;
-import com.mnw.stickyselection.infrastructure.*;
+import com.mnw.stickyselection.infrastructure.FindClosestHighlighter;
+import com.mnw.stickyselection.infrastructure.SuggestCaret;
 import com.mnw.stickyselection.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class StickySelectionEditorComponent {
 
@@ -65,14 +64,11 @@ public class StickySelectionEditorComponent {
             }
 
             @Override
-            public void caretAdded(CaretEvent caretEvent) {
-
-            }
+            public void caretAdded(CaretEvent caretEvent) { }
 
             @Override
-            public void caretRemoved(CaretEvent caretEvent) {
+            public void caretRemoved(CaretEvent caretEvent) { }
 
-            }
         });
 
     }
@@ -111,11 +107,11 @@ public class StickySelectionEditorComponent {
 
             }
         } else {
-            if (Strings.isEmpty(editor.getSelectionModel().getSelectedText())) {
+            if (StringUtil.isEmpty(editor.getSelectionModel().getSelectedText())) {
                 editor.getSelectionModel().selectWordAtCaret(true);
             }
             final String selectedText = editor.getSelectionModel().getSelectedText();
-            if (Strings.isEmpty(selectedText)) {
+            if (StringUtil.isEmpty(selectedText)) {
                 return;
             }
 
@@ -135,7 +131,14 @@ public class StickySelectionEditorComponent {
         }
 
         setUndoEnabled(!undoList.isEmpty());
-        paintGroups.get(paintGroup).highlighters.sort((o1, o2)-> ((Integer)o1.getStartOffset()).compareTo(o2.getStartOffset()));
+        Collections.sort(paintGroups.get(paintGroup).highlighters, new Comparator<RangeHighlighter>() {
+            @Override
+            public int compare(RangeHighlighter o1, RangeHighlighter o2) {
+                return ((Integer)o1.getStartOffset()).compareTo(o2.getStartOffset());
+            }
+        });
+
+        //paintGroups.get(paintGroup).highlighters.sort((o1, o2)-> ((Integer)o1.getStartOffset()).compareTo(o2.getStartOffset()));
 
     }
 
@@ -274,7 +277,8 @@ public class StickySelectionEditorComponent {
             }
         }
 
-        missingPaintGroups.sort(Collections.reverseOrder());
+        Collections.sort(missingPaintGroups, Collections.reverseOrder());
+        //missingPaintGroups.sort(Collections.reverseOrder());
         for (Integer missingPaintGroup : missingPaintGroups) {
             paintGroups.get(missingPaintGroup).clear(editor.getMarkupModel());
             paintGroups.remove((int)missingPaintGroup);
@@ -421,11 +425,17 @@ public class StickySelectionEditorComponent {
         for (int paintGroup = 0; paintGroup < paintGroups.size(); paintGroup++) {
             EditorHighlightsForPaintGroup highlightsForPaintGroup = new EditorHighlightsForPaintGroup();
 
-            highlightsForPaintGroup.addAll(
-                    paintGroups.get(paintGroup).highlighters.stream()
+            final ArrayList<RangeHighlighter> highlighters = paintGroups.get(paintGroup).highlighters;
+            for (RangeHighlighter highlighter : highlighters) {
+                final HighlightOffset highlightOffset = new HighlightOffset(highlighter.getStartOffset(),
+                                                                            highlighter.getEndOffset());
+                highlightsForPaintGroup.add(highlightOffset);
+            }
+            /*paintGroups.get(paintGroup).highlighters.addAll(
+                    highlighters.stream()
                             .map(rangeHighlighter->new HighlightOffset(rangeHighlighter.getStartOffset(),
                                                                        rangeHighlighter.getEndOffset()))
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList()));*/
             ret.put(paintGroup, highlightsForPaintGroup);
         }
         return ret;

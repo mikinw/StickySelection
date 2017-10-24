@@ -22,12 +22,15 @@ import com.mnw.stickyselection.actions.ClearPaintGroupInstantAction;
 import com.mnw.stickyselection.actions.ConvertPaintGroupInstantAction;
 import com.mnw.stickyselection.actions.PaintSelectionInstantAction;
 import com.mnw.stickyselection.actions.StickyEditorAction;
-import com.mnw.stickyselection.model.*;
+import com.mnw.stickyselection.model.EditorHighlightsForPaintGroup;
+import com.mnw.stickyselection.model.StoredHighlightsRepository;
+import com.mnw.stickyselection.model.ValuesRepository;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StickySelectionAppComponent implements ApplicationComponent, EditorFactoryListener, Disposable {
 
@@ -96,7 +99,10 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
         ApplicationManager.getApplication().getMessageBus().connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, new FileDocumentManagerListener() {
             @Override
             public void beforeAllDocumentsSaving() {
-                editors.values().forEach(StickySelectionEditorComponent::persistHighlights);
+                for (StickySelectionEditorComponent editorComponent : editors.values()) {
+                    editorComponent.persistHighlights();
+                }
+                //editors.values().forEach(StickySelectionEditorComponent::persistHighlights);
             }
 
             @Override
@@ -130,7 +136,10 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
     }
 
     public void updateAllHighlighters() {
-        editors.values().forEach(StickySelectionEditorComponent::updateAllHighlighters);
+        for (StickySelectionEditorComponent editorComponent : editors.values()) {
+            editorComponent.updateAllHighlighters();
+        }
+        //editors.values().forEach(StickySelectionEditorComponent::updateAllHighlighters);
     }
 
     public void updateRegisteredActions() {
@@ -148,17 +157,35 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
                                     actionManager,
                                     paintSelectionInstantAction,
                                     paintActionIds,
-                                    PaintSelectionInstantAction::new);
+                                    new InstantActionFactory() {
+                                        @NotNull
+                                        @Override
+                                        public StickyEditorAction createInstantAction(int paintGroup, Icon actionIcon) {
+                                            return new PaintSelectionInstantAction(paintGroup, actionIcon);
+                                        }
+                                    });
         updateActionsOfSpecificType(paintGroupCount,
                                     actionManager,
                                     clearPaintGroupInstantAction,
                                     clearActionIds,
-                                    ClearPaintGroupInstantAction::new);
+                                    new InstantActionFactory() {
+                                        @NotNull
+                                        @Override
+                                        public StickyEditorAction createInstantAction(int paintGroup, Icon actionIcon) {
+                                            return new ClearPaintGroupInstantAction(paintGroup, actionIcon);
+                                        }
+                                    });
         updateActionsOfSpecificType(paintGroupCount,
                                     actionManager,
                                     convertPaintGroupInstantAction,
                                     convertActionIds,
-                                    ConvertPaintGroupInstantAction::new);
+                                    new InstantActionFactory() {
+                                        @NotNull
+                                        @Override
+                                        public StickyEditorAction createInstantAction(int paintGroup, Icon actionIcon) {
+                                            return new ConvertPaintGroupInstantAction(paintGroup, actionIcon);
+                                        }
+                                    });
 
     }
 

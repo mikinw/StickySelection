@@ -37,7 +37,7 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
     @Transient
     public Map<Integer, EditorHighlightsForPaintGroup> getEditorHighlights(String relativePath) {
         final Map<Integer, EditorHighlightsForPaintGroup> editorHighlightsOfAllPaintGroups = editorHighlights.get(relativePath);
-        return editorHighlightsOfAllPaintGroups != null ? editorHighlightsOfAllPaintGroups : new HashMap<>();
+        return editorHighlightsOfAllPaintGroups != null ? editorHighlightsOfAllPaintGroups : new HashMap<Integer, EditorHighlightsForPaintGroup>();
     }
 
     @Transient
