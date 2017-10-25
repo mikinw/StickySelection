@@ -113,6 +113,10 @@ public class StickySelectionEditorComponent implements Disposable {
         if (editor.getCaretModel().getCaretCount() > 1) {
             final List<CaretState> caretsAndSelections = editor.getCaretModel().getCaretsAndSelections();
             final TextAttributes textAttributes = createTextAttributes(paintGroupProperties);
+
+            clearUndoFields();
+            lastPaintedGroup = paintGroup;
+            
             for (CaretState caretsAndSelection : caretsAndSelections) {
                 final LogicalPosition selectionStart = caretsAndSelection.getSelectionStart();
                 final LogicalPosition selectionEnd = caretsAndSelection.getSelectionEnd();
@@ -275,6 +279,10 @@ public class StickySelectionEditorComponent implements Disposable {
         paintGroups.get(paintGroup).clear(editor.getMarkupModel());
         final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
         projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
+
+        if (paintGroup == lastPaintedGroup) {
+            clearUndoFields();
+        }
     }
 
     public void clearAll() {
