@@ -1,11 +1,12 @@
 <idea-plugin version="2">
   <id>com.mnw.stickyselection</id>
   <name>Sticky Selection</name>
-  <version>2.1</version>
-  <vendor email="mikinw.development@gmail.com" url="http://mikinw.blogspot.co.uk">MikiNW</vendor>
+  <version>2.2</version>
+  <vendor email="mikinw.development@gmail.com" url="https://github.com/mikinw/StickySelection">MikiNW</vendor>
 
   <description><![CDATA[
       You can mark a selection to be permanently highlighted, even when your caret moves away.
+      Inspired by "Style token" of Notepad++.
 
       <br>You can define an arbitrary number of Paint Groups. Selecting the appropriate editor action
       (keystroke or context menu), the all occurrences of currently selected text will be added to
@@ -79,17 +80,17 @@
       v1.0 this is the first release<br>
       v1.2 <br>
       v2.0 redesign and lots of new features (navigation, convert, arbitrary number of groups, visual hints, undo)<br>
+      v2.1 persisting selections when IDE gets closed<br>
+      v2.2 fixed: exception during first start, fixed: incorrectly restored Paint after reopening the IDE (when the document has changed) <br>
       ]]>
   </change-notes>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="107.105"/>
+  <idea-version since-build="135"/>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
-  <!-- uncomment to enable plugin in all products
   <depends>com.intellij.modules.lang</depends>
-  -->
 
   <application-components>
     <!-- Add your application components here -->

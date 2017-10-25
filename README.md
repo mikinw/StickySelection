@@ -42,4 +42,5 @@ Note: control + alt on Mac is (I guess) meta + alt
 
 If you find this plugin useful, please consider inviting me for a beer.
 I develop this plugin in my free time and I'm more motivated when I have a beer on desk :-)
+
 http://PayPal.Me/mnwDevelopment/
