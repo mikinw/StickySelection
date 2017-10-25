@@ -176,7 +176,7 @@ public class StickySelectionPreferences implements Configurable {
                 paintGroupRow.getData(savedValues.getPaintGroupPropertiesWithId(paintGroupRow.getDataBeanId()));
             } else {
                 savedValues.addNewPaintGroup();
-                paintGroupRow.getData(savedValues.getLast());
+                paintGroupRow.linkToDataBean(savedValues.getLast());
             }
         }
         panelColorScheme.updateUI();

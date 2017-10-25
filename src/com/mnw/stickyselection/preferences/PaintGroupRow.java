@@ -18,6 +18,7 @@ public class PaintGroupRow {
     private JTextField textFieldLayer;
     private JCheckBox checkBoxFrame;
     private JPanel rowPanel;
+
     private int dataBeanId;
 
     public PaintGroupRow() {
@@ -47,6 +48,11 @@ public class PaintGroupRow {
 
     public int getDataBeanId() {
         return dataBeanId;
+    }
+
+    public void linkToDataBean(PaintGroupDataBean data) {
+        getData(data);
+        this.dataBeanId = data.getId();
     }
 
     public boolean isModified(PaintGroupDataBean data) {
