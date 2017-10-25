@@ -1,9 +1,9 @@
 package com.mnw.stickyselection;
 
-import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -13,11 +13,15 @@ import com.intellij.openapi.editor.event.CaretEvent;
 import com.intellij.openapi.editor.event.CaretListener;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.editor.ex.MarkupModelEx;
+import com.intellij.openapi.editor.ex.RangeHighlighterEx;
+import com.intellij.openapi.editor.impl.event.MarkupModelListener;
 import com.intellij.openapi.editor.markup.*;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.containers.HashMap;
 import com.mnw.stickyselection.actions.UndoLastPaintAction;
 import com.mnw.stickyselection.infrastructure.FindClosestHighlighter;
 import com.mnw.stickyselection.infrastructure.SuggestCaret;
@@ -26,15 +30,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class StickySelectionEditorComponent {
+public class StickySelectionEditorComponent implements Disposable {
 
-    private static final int INITIAL_CAPACITY = 16;
+    private static final boolean REMOVE_ALL_CARETS = true;
     private final Editor editor;
     private final String filePath;
     private final Project project;
     protected List<PaintGroup> paintGroups = new ArrayList<>();
 
     private List<RangeHighlighter> undoList = new ArrayList<>();
+
+    private Map<RangeHighlighter, Integer> highlighterPaintGroupMap = new HashMap<>();
     private int lastPaintedGroup;
 
     private int navigationGroup = -1;
@@ -70,9 +76,26 @@ public class StickySelectionEditorComponent {
             public void caretRemoved(CaretEvent caretEvent) { }
 
         });
+        ((MarkupModelEx) editor.getMarkupModel()).addMarkupModelListener(this, new MarkupModelListener() {
+            @Override
+            public void afterAdded(@NotNull RangeHighlighterEx rangeHighlighterEx) { }
+
+            @Override
+            public void beforeRemoved(@NotNull RangeHighlighterEx rangeHighlighterEx) {
+                final Integer paintGroupIndex = highlighterPaintGroupMap.remove(rangeHighlighterEx);
+                if (paintGroupIndex == null) {return;}
+                final PaintGroup paintGroup = paintGroups.get(paintGroupIndex);
+                if (paintGroup == null) {return;}
+                paintGroup.highlighters.remove(rangeHighlighterEx);
+            }
+
+            @Override
+            public void attributesChanged(@NotNull RangeHighlighterEx rangeHighlighterEx, boolean b, boolean b1) { }
+        });
 
     }
 
+    @Override
     public void dispose() {
         clearState();
         //editor = null;
@@ -130,6 +153,7 @@ public class StickySelectionEditorComponent {
             }
         }
 
+        editor.getSelectionModel().removeSelection(REMOVE_ALL_CARETS);
         setUndoEnabled(!undoList.isEmpty());
         Collections.sort(paintGroups.get(paintGroup).highlighters, new Comparator<RangeHighlighter>() {
             @Override
@@ -173,6 +197,7 @@ public class StickySelectionEditorComponent {
 
         undoList.add(rangeHighlighter);
         paintGroups.get(paintGroup).add(rangeHighlighter);
+        highlighterPaintGroupMap.put(rangeHighlighter, paintGroup);
 
         if (persist) {
             final StoredHighlightsRepository projectSettings = ServiceManager

@@ -1,6 +1,5 @@
 package com.mnw.stickyselection;
 
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.markup.*;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 
@@ -23,7 +22,8 @@ public class PaintGroup {
     }
 
     public void clear(MarkupModel markupModel) {
-        for(RangeHighlighter highlight : highlighters) {
+        final ArrayList<RangeHighlighter> copy = (ArrayList<RangeHighlighter>) highlighters.clone();
+        for(RangeHighlighter highlight : copy) {
             markupModel.removeHighlighter(highlight);
         }
         highlighters.clear();

@@ -10,19 +10,27 @@ public class SuggestCaretForNext implements SuggestCaret {
     @Override
     public int findCaretInPaintGroup(int currentCaret, ArrayList<RangeHighlighter> highlighters,
                                      boolean isCycleThroughEnabled) {
-        for (int i = 0; i < highlighters.size(); i++) {
-            if (highlighters.get(i).getStartOffset() <= currentCaret
-                    && highlighters.get(i).getEndOffset() >= currentCaret) {
-                int next;
-                if (i == highlighters.size() - 1) {
-                    next = isCycleThroughEnabled ? 0 : i;
-                } else {
-                    next = i + 1;
-                }
+        for (int i = 0; i < highlighters.size() - 1; i++) {
+            if (caretIsInside(currentCaret, highlighters.get(i))) {
+                int next = i + 1;
 
+                if (highlighters.get(next).getStartOffset() > currentCaret) {
+                    return highlighters.get(next).getStartOffset();
+                }
+            }
+        }
+        if (caretIsInside(currentCaret, highlighters.get(highlighters.size()-1))) {
+            int next = isCycleThroughEnabled ? 0 : highlighters.size()-1;
+            if (highlighters.get(next).getStartOffset() != currentCaret) {
                 return highlighters.get(next).getStartOffset();
             }
         }
+
         return -1;
+    }
+
+    private static boolean caretIsInside(int currentCaret, RangeHighlighter rangeHighlighter) {
+        return rangeHighlighter.getStartOffset() <= currentCaret
+                && rangeHighlighter.getEndOffset() >= currentCaret;
     }
 }
