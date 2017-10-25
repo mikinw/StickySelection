@@ -4,27 +4,28 @@ import com.intellij.openapi.editor.markup.RangeHighlighter;
 
 import java.util.ArrayList;
 
-public class SuggestCaretForPrevious implements SuggestCaret {
-    public SuggestCaretForPrevious() { }
+public class SuggestCaretForNextNav implements SuggestCaret {
+    public SuggestCaretForNextNav() { }
 
     @Override
     public int findCaretInPaintGroup(int currentCaret, ArrayList<RangeHighlighter> highlighters,
                                      boolean isCycleThroughEnabled) {
-        for (int i = highlighters.size() - 1; i > 0; i--) {
+        for (int i = 0; i < highlighters.size() - 1; i++) {
             if (caretIsInside(currentCaret, highlighters.get(i))) {
-                int next = i - 1;
+                int next = i + 1;
 
-                if (highlighters.get(next).getStartOffset() < currentCaret) {
+                if (highlighters.get(next).getStartOffset() > currentCaret) {
                     return highlighters.get(next).getStartOffset();
                 }
             }
         }
-        if (caretIsInside(currentCaret, highlighters.get(0))) {
-            int next = isCycleThroughEnabled ? highlighters.size() - 1 : 0;
+        if (caretIsInside(currentCaret, highlighters.get(highlighters.size()-1))) {
+            int next = isCycleThroughEnabled ? 0 : highlighters.size()-1;
             if (highlighters.get(next).getStartOffset() != currentCaret) {
                 return highlighters.get(next).getStartOffset();
             }
         }
+
         return -1;
     }
 
