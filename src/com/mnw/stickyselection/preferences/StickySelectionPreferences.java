@@ -47,9 +47,9 @@ public class StickySelectionPreferences implements Configurable {
         checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
         checkboxPersistHighlights.setSelected(savedValues.getPersistHighlights());
 
-        while (panelColorScheme.getComponentCount() > 1) {
+        while (panelColorScheme.getComponentCount() > 0) {
 
-            panelColorScheme.remove(1);
+            panelColorScheme.remove(0);
         }
         for (int i = 0; i < savedValues.getPaintGroupCount(); i++) {
             final PaintGroupDataBean paintGroupProperties = savedValues.getPaintGroupProperties(i);
@@ -106,7 +106,7 @@ public class StickySelectionPreferences implements Configurable {
             return true;
         }
 
-        for (int i = 0; i < panelColorScheme.getComponentCount() - 1; i++) {
+        for (int i = 0; i < panelColorScheme.getComponentCount(); i++) {
             if (paintGroupRows.get(i).isModified(savedValues.getPaintGroupProperties(i))) {
                 refreshWarning.setVisible(false);
                 return true;
