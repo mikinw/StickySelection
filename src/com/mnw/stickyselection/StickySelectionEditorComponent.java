@@ -329,7 +329,13 @@ public class StickySelectionEditorComponent {
     public void convertPaintGroupToSelection(int i) {
         final ArrayList<RangeHighlighter> highlighters = paintGroups.get(i).highlighters;
         if (highlighters.isEmpty()) {
-            HintManager.getInstance().showInformationHint(editor, "This Paint Group is currently empty");
+            Notification notification = new Notification(
+                    "StickySelection warnings",
+                    "This Paint Group is currently empty",
+                    "Nothing to convert",
+                    NotificationType.INFORMATION);
+            Notifications.Bus.notify(notification);
+            //HintManager.getInstance().showInformationHint(editor, "This Paint Group is currently empty");
             return;
         }
 
