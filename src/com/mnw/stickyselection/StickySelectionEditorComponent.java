@@ -76,7 +76,7 @@ public class StickySelectionEditorComponent implements Disposable {
             public void caretRemoved(CaretEvent caretEvent) { }
 
         });
-        ((MarkupModelEx) editor.getMarkupModel()).addMarkupModelListener(this, new MarkupModelListener() {
+        ((MarkupModelEx) editor.getMarkupModel()).addMarkupModelListener(this, new MarkupModelListener.Adapter() {
             @Override
             public void afterAdded(@NotNull RangeHighlighterEx rangeHighlighterEx) { }
 
@@ -89,8 +89,6 @@ public class StickySelectionEditorComponent implements Disposable {
                 paintGroup.highlighters.remove(rangeHighlighterEx);
             }
 
-            @Override
-            public void attributesChanged(@NotNull RangeHighlighterEx rangeHighlighterEx, boolean b, boolean b1) { }
         });
 
     }
