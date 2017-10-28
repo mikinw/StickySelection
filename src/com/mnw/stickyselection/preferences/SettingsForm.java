@@ -50,7 +50,7 @@ public class SettingsForm {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
         checkboxCycleThrough = new JCheckBox();
         checkboxCycleThrough.setText(
                 "When navigating to next selection, start from the beginning of the document if we reached the end "
@@ -63,26 +63,6 @@ public class SettingsForm {
                                           GridConstraints.ANCHOR_WEST,
                                           GridConstraints.FILL_NONE,
                                           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                          GridConstraints.SIZEPOLICY_FIXED,
-                                          null,
-                                          null,
-                                          null,
-                                          0,
-                                          false));
-        refreshWarning = new JLabel();
-        refreshWarning.setForeground(new Color(-4503987));
-        refreshWarning.setText(
-                "In order to make actions correcly reflected in the Keymap section, reopening Settings may be "
-                        + "necessary.");
-        refreshWarning.setVisible(false);
-        mainPanel.add(refreshWarning,
-                      new GridConstraints(3,
-                                          0,
-                                          1,
-                                          1,
-                                          GridConstraints.ANCHOR_WEST,
-                                          GridConstraints.FILL_NONE,
-                                          GridConstraints.SIZEPOLICY_FIXED,
                                           GridConstraints.SIZEPOLICY_FIXED,
                                           null,
                                           null,
@@ -179,6 +159,44 @@ public class SettingsForm {
                                           GridConstraints.ANCHOR_WEST,
                                           GridConstraints.FILL_NONE,
                                           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                                          GridConstraints.SIZEPOLICY_FIXED,
+                                          null,
+                                          null,
+                                          null,
+                                          0,
+                                          false));
+        final JLabel label1 = new JLabel();
+        label1.setText(
+                "Hint: Higlight layer defines which highlight gets painted over the others. Higher values will cover "
+                        + "lower values. For sample values see tooltip.");
+        mainPanel.add(label1,
+                      new GridConstraints(3,
+                                          0,
+                                          1,
+                                          1,
+                                          GridConstraints.ANCHOR_WEST,
+                                          GridConstraints.FILL_NONE,
+                                          GridConstraints.SIZEPOLICY_FIXED,
+                                          GridConstraints.SIZEPOLICY_FIXED,
+                                          null,
+                                          null,
+                                          null,
+                                          0,
+                                          false));
+        refreshWarning = new JLabel();
+        refreshWarning.setForeground(new Color(-4503987));
+        refreshWarning.setText(
+                "In order to make actions correcly reflected in the Keymap section, reopening Settings may be "
+                        + "necessary.");
+        refreshWarning.setVisible(false);
+        mainPanel.add(refreshWarning,
+                      new GridConstraints(4,
+                                          0,
+                                          1,
+                                          1,
+                                          GridConstraints.ANCHOR_WEST,
+                                          GridConstraints.FILL_NONE,
+                                          GridConstraints.SIZEPOLICY_FIXED,
                                           GridConstraints.SIZEPOLICY_FIXED,
                                           null,
                                           null,
