@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.mnw.stickyselection.preferences.SettingsForm">
-  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="1046" height="400"/>
@@ -14,16 +14,6 @@
         </constraints>
         <properties>
           <text value="When navigating to next selection, start from the beginning of the document if we reached the end (similar for &quot;previous&quot; navigation)"/>
-        </properties>
-      </component>
-      <component id="8056c" class="javax.swing.JLabel" binding="refreshWarning">
-        <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <foreground color="-4503987"/>
-          <text value="In order to make actions correcly reflected in the Keymap section, reopening Settings may be necessary."/>
-          <visible value="false"/>
         </properties>
       </component>
       <grid id="2ec76" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -69,6 +59,24 @@
         <properties>
           <selected value="false"/>
           <text value="Keep highlights when IntelliJ is closed"/>
+        </properties>
+      </component>
+      <component id="99806" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Hint: Higlight layer defines which highlight gets painted over the others. Higher values will cover lower values. For sample values see tooltip."/>
+        </properties>
+      </component>
+      <component id="8056c" class="javax.swing.JLabel" binding="refreshWarning">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-4503987"/>
+          <text value="In order to make actions correcly reflected in the Keymap section, reopening Settings may be necessary."/>
+          <visible value="false"/>
         </properties>
       </component>
     </children>
