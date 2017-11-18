@@ -86,7 +86,7 @@ public class StickySelectionEditorComponent implements Disposable {
                 if (paintGroupIndex == null) {return;}
                 final PaintGroup paintGroup = paintGroups.get(paintGroupIndex);
                 if (paintGroup == null) {return;}
-                paintGroup.highlighters.remove(rangeHighlighterEx);
+                paintGroup.remove(rangeHighlighterEx);
             }
 
         });
@@ -349,7 +349,7 @@ public class StickySelectionEditorComponent implements Disposable {
             return;
         }
         for (RangeHighlighter rangeHighlighter : undoList) {
-            paintGroups.get(lastPaintedGroup).highlighters.remove(rangeHighlighter);
+            paintGroups.get(lastPaintedGroup).remove(rangeHighlighter);
             editor.getMarkupModel().removeHighlighter(rangeHighlighter);
         }
         final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
