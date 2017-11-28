@@ -1,6 +1,9 @@
 package com.mnw.stickyselection;
 
+import com.intellij.openapi.editor.ex.MarkupModelEx;
+import com.intellij.openapi.editor.ex.RangeHighlighterEx;
 import com.intellij.openapi.editor.markup.*;
+import com.intellij.util.Consumer;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 
 import java.util.ArrayList;
@@ -49,30 +52,53 @@ public class PaintGroup {
 
     public void repaint(PaintGroupDataBean paintGroupProperties, MarkupModel markupModel) {
         this.paintGroupProperties = paintGroupProperties;
-        final TextAttributes textAttributes = new TextAttributes();
-        textAttributes.setBackgroundColor(paintGroupProperties.getColor());
+        if (highlighters.isEmpty()) { return; }
+
+        final TextAttributes newTextAttributes = new TextAttributes();
+        newTextAttributes.setBackgroundColor(paintGroupProperties.getColor());
         if (paintGroupProperties.isFrameNeeded()) {
-            textAttributes.setEffectType(EffectType.BOXED);
-            textAttributes.setEffectColor(paintGroupProperties.getColor());
+            newTextAttributes.setEffectType(EffectType.BOXED);
+            newTextAttributes.setEffectColor(paintGroupProperties.getColor());
         }
-        final List<RangeHighlighter> newHighLighters = new ArrayList<>(highlighters.size());
-        for (RangeHighlighter highlighter : highlighters) {
-            final int startOffset = highlighter.getStartOffset();
-            final int endOffset = highlighter.getEndOffset();
-            markupModel.removeHighlighter(highlighter);
-            final RangeHighlighter rangeHighlighter = markupModel.addRangeHighlighter(
-                    startOffset,
-                    endOffset,
-                    paintGroupProperties.getHighlightLayer(),
-                    textAttributes,
-                    HighlighterTargetArea.EXACT_RANGE);
-            if (paintGroupProperties.isMarkerNeeded()) {
-                rangeHighlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
+
+        if (highlighters.get(0).getLayer() == paintGroupProperties.getHighlightLayer()) {
+            for (RangeHighlighter highlighter : highlighters) {
+                ((MarkupModelEx) markupModel).setRangeHighlighterAttributes(highlighter, newTextAttributes);
+                if (paintGroupProperties.isMarkerNeeded()) {
+                    highlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
+                } else {
+                    highlighter.setErrorStripeMarkColor(null);
+                }
             }
-            newHighLighters.add(rangeHighlighter);
+        } else {
+
+            final List<RangeHighlighter> newHighLighters = new ArrayList<>(highlighters.size());
+            final ArrayList<RangeHighlighter> copy = (ArrayList<RangeHighlighter>) highlighters.clone();
+
+            for (RangeHighlighter highlighter : copy) {
+                final int startOffset = highlighter.getStartOffset();
+                final int endOffset = highlighter.getEndOffset();
+                markupModel.removeHighlighter(highlighter);
+                final RangeHighlighter rangeHighlighter = markupModel.addRangeHighlighter(
+                        startOffset,
+                        endOffset,
+                        paintGroupProperties.getHighlightLayer(),
+                        newTextAttributes,
+                        HighlighterTargetArea.EXACT_RANGE);
+                if (paintGroupProperties.isMarkerNeeded()) {
+                    highlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
+                }
+                newHighLighters.add(rangeHighlighter);
+            }
+            highlighters.addAll(newHighLighters);
         }
-        highlighters.clear();
-        highlighters.addAll(newHighLighters);
+
+    }
+
+    public void remove(RangeHighlighter rangeHighlighter) {
+        // TODO: 2017. 11. 18. this could be faster with binary search
+
+        highlighters.remove(rangeHighlighter);
 
     }
 }

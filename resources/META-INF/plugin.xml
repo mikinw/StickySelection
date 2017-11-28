@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.mnw.stickyselection</id>
   <name>Sticky Selection</name>
-  <version>2.3</version>
+  <version>2.4</version>
   <vendor email="mikinw.development@gmail.com" url="https://github.com/mikinw/StickySelection">MikiNW</vendor>
 
   <description><![CDATA[
@@ -48,6 +48,11 @@
       <li>Press <em>Ctrl + Alt + semicolon</em> to navigate to previous Paint in the current Paint Group.
       </ul>
       <br>Note: control + alt on Mac is (I guess) meta + alt
+
+      <p>If you find this plugin useful, please consider inviting me for a beer.
+        I develop this plugin in my free time and I'm more motivated when I have a beer on desk :-)
+
+        <br> http://PayPal.Me/mnwDevelopment/
       ]]></description>
 
 
@@ -83,6 +88,7 @@
       v2.1 persisting selections when IDE gets closed<br>
       v2.2 fixed: exception during first start, fixed: incorrectly restored Paint after reopening the IDE (when the document has changed) <br>
       v2.3 fixed: caret can jump to deleted highlight, fixed: preferences page does not respond to Paint Group changes, fixed: exception after "paint, convert, paint, undo" <br>
+      v2.4 fixed: exception when changing color, fixed: lingering highlights when changing color <br>
       ]]>
   </change-notes>
 

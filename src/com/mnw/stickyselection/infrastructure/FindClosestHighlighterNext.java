@@ -10,6 +10,7 @@ public class FindClosestHighlighterNext implements FindClosestHighlighter {
     public void findUpcoming(int currentCaret,
                              StickySelectionEditorComponent.CurrentBest currentBest,
                              int paintGroupNumber, ArrayList<RangeHighlighter> highlighters) {
+        // TODO: 2017. 11. 18. this could be faster with binary search
         for (int i = 0; i < highlighters.size(); i++) {
             if (highlighters.get(i).getStartOffset() > currentCaret) {
                 final int distanceFromCurrentCaret = highlighters.get(i).getStartOffset() - currentCaret;
