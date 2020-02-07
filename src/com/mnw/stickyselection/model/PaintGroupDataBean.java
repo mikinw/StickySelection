@@ -34,7 +34,7 @@ public class PaintGroupDataBean {
         return layer;
     }
 
-    public void setLayer(final int layer) {
+    public void setHighlightLayer(final int layer) {
         this.layer = layer;
     }
 

@@ -44,7 +44,7 @@ public class PaintGroupRow {
     public void getData(PaintGroupDataBean data) {
         data.setShortcut(textFieldShortcut.getText());
         data.setFrameNeeded(checkBoxFrame.isSelected());
-        data.setLayer(Integer.parseUnsignedInt(textFieldLayer.getText()));
+        data.setHighlightLayer(Integer.parseUnsignedInt(textFieldLayer.getText()));
         data.setMarkerNeeded(checkBoxMarker.isSelected());
         data.setColor(colorButton.getColor());
     }
