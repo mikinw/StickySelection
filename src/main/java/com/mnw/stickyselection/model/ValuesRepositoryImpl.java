@@ -14,9 +14,7 @@ import java.util.List;
 
 @State(
         name = "StickySelectionProperties", storages = {
-        @Storage(
-                id = "other",
-                file = "$APP_CONFIG$/StickySelection.xml")
+        @Storage("$APP_CONFIG$/StickySelection.xml")
 })
 public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateComponent<ValuesRepositoryImpl> {
 

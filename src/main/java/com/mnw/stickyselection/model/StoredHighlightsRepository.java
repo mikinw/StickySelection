@@ -10,11 +10,7 @@ import java.util.Map;
 
 @State(
         name = "StickySelectionHighlights", storages = {
-        @Storage(
-            id = "dir",
-            file = "$PROJECT_CONFIG_DIR$/StickySelectionHighlights.xml",
-            scheme = StorageScheme.DIRECTORY_BASED
-        )
+        @Storage("StickySelectionHighlights.xml")
 })
 public class StoredHighlightsRepository implements PersistentStateComponent<StoredHighlightsRepository> {
 

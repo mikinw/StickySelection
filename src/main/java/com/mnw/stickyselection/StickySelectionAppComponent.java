@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StickySelectionAppComponent implements ApplicationComponent, EditorFactoryListener, Disposable {
@@ -149,9 +150,9 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
         final String paintSelectionInstantAction = "PaintSelectionInstantAction.";
         final String clearPaintGroupInstantAction = "ClearPaintGroupInstantAction.";
         final String convertPaintGroupInstantAction = "ConvertPaintGroupInstantAction.";
-        final String[] paintActionIds = actionManager.getActionIds(ACTION_ID_PREFIX + paintSelectionInstantAction);
-        final String[] clearActionIds = actionManager.getActionIds(ACTION_ID_PREFIX + clearPaintGroupInstantAction);
-        final String[] convertActionIds = actionManager.getActionIds(ACTION_ID_PREFIX + convertPaintGroupInstantAction);
+        final List<String> paintActionIds = actionManager.getActionIdList(ACTION_ID_PREFIX + paintSelectionInstantAction);
+        final List<String> clearActionIds = actionManager.getActionIdList(ACTION_ID_PREFIX + clearPaintGroupInstantAction);
+        final List<String> convertActionIds = actionManager.getActionIdList(ACTION_ID_PREFIX + convertPaintGroupInstantAction);
 
         updateActionsOfSpecificType(paintGroupCount,
                                     actionManager,
@@ -190,8 +191,8 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
     }
 
     private void updateActionsOfSpecificType(int paintGroupCount, ActionManager actionManager,
-                                             String instantAction, String[] actionIds, InstantActionFactory instantActionFactory) {
-        final int length = actionIds.length;
+                                             String instantAction, List<String> actionIds, InstantActionFactory instantActionFactory) {
+        final int length = actionIds.size();
         for (int i = 0; i < Math.min(paintGroupCount, length); i++) {
             final AnAction action = actionManager.getAction(ACTION_ID_PREFIX + instantAction + i);
             if (action != null) {

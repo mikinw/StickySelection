@@ -250,7 +250,8 @@ public class StickySelectionEditorComponent implements Disposable {
             final ValuesRepository valuesRepository = ServiceManager.getService(ValuesRepository.class);
             if (valuesRepository.getPaintGroupCount() - 1 < paintGroup) {
                 final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
-                projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
+                // TODO: 28/11/2017 ask the user if it should be removed (and only remove it outside of the loop)
+                //projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
                 continue;
             }
             PaintGroupDataBean paintGroupProperties = valuesRepository.getPaintGroupProperties(paintGroup);

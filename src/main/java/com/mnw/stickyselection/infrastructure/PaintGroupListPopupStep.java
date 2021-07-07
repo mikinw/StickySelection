@@ -78,7 +78,7 @@ public class PaintGroupListPopupStep implements ListPopupStep<PaintGroupDataBean
 
     @Nullable
     @Override
-    public PopupStep<PaintGroupDataBean> onChosen(PaintGroupDataBean selectedValue, boolean finalChoice) {
+    public PopupStep<?> onChosen(PaintGroupDataBean selectedValue, boolean finalChoice) {
         final Runnable performAction = runnableFactory.createPerformAction(list.indexOf(selectedValue));
         performAction.run();
         return PopupStep.FINAL_CHOICE;
