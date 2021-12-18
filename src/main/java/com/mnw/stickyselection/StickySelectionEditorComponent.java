@@ -21,7 +21,6 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.containers.HashMap;
 import com.mnw.stickyselection.actions.UndoLastPaintAction;
 import com.mnw.stickyselection.infrastructure.FindClosestHighlighter;
 import com.mnw.stickyselection.infrastructure.SuggestCaret;
@@ -36,18 +35,18 @@ public class StickySelectionEditorComponent implements Disposable {
     private final Editor editor;
     private final String filePath;
     private final Project project;
-    protected List<PaintGroup> paintGroups = new ArrayList<>();
+    private final List<PaintGroup> paintGroups = new ArrayList<>();
 
-    private List<RangeHighlighter> undoList = new ArrayList<>();
+    private final List<RangeHighlighter> undoList = new ArrayList<>();
 
-    private Map<RangeHighlighter, Integer> highlighterPaintGroupMap = new HashMap<>();
+    private final Map<RangeHighlighter, Integer> highlighterPaintGroupMap = new HashMap<>();
     private int lastPaintedGroup;
 
     private int navigationGroup = -1;
     private boolean documentModified = false;
 
 
-    public StickySelectionEditorComponent(Editor editor) {
+    /*package*/ StickySelectionEditorComponent(Editor editor) {
         this.editor = editor;
 
         final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
@@ -76,7 +75,7 @@ public class StickySelectionEditorComponent implements Disposable {
             public void caretRemoved(CaretEvent caretEvent) { }
 
         });
-        ((MarkupModelEx) editor.getMarkupModel()).addMarkupModelListener(this, new MarkupModelListener.Adapter() {
+        ((MarkupModelEx) editor.getMarkupModel()).addMarkupModelListener(this, new MarkupModelListener() {
             @Override
             public void afterAdded(@NotNull RangeHighlighterEx rangeHighlighterEx) { }
 
@@ -116,7 +115,7 @@ public class StickySelectionEditorComponent implements Disposable {
 
             clearUndoFields();
             lastPaintedGroup = paintGroup;
-            
+
             for (CaretState caretsAndSelection : caretsAndSelections) {
                 final LogicalPosition selectionStart = caretsAndSelection.getSelectionStart();
                 final LogicalPosition selectionEnd = caretsAndSelection.getSelectionEnd();
@@ -538,9 +537,9 @@ public class StickySelectionEditorComponent implements Disposable {
     private class ClearUndoFieldsWhenChanged implements DocumentListener {
 
         @Override
-        public void beforeDocumentChange(DocumentEvent documentEvent) {}
+        public void beforeDocumentChange(@NotNull DocumentEvent event) {}
         @Override
-        public void documentChanged(DocumentEvent documentEvent) {
+        public void documentChanged(@NotNull DocumentEvent event) {
             clearUndoFields();
         }
 
@@ -548,10 +547,10 @@ public class StickySelectionEditorComponent implements Disposable {
 
     private class SetModifiedFlag implements DocumentListener {
         @Override
-        public void beforeDocumentChange(DocumentEvent documentEvent) {}
+        public void beforeDocumentChange(@NotNull DocumentEvent event) {}
 
         @Override
-        public void documentChanged(DocumentEvent documentEvent) {
+        public void documentChanged(@NotNull DocumentEvent event) {
             documentModified = true;
         }
     }
