@@ -5,9 +5,11 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.mnw.stickyselection.StickySelectionAppComponent;
+import com.mnw.stickyselection.StickySelectionSettingsComponent;
 import com.mnw.stickyselection.infrastructure.RandomPaintGroupData;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 import com.mnw.stickyselection.model.ValuesRepository;
+import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,94 +23,55 @@ import javax.swing.*;
 
 public class StickySelectionPreferences implements Configurable {
 
-    private java.util.List<PaintGroupRow> paintGroupRows = new ArrayList<>();
-
-    private JComponent mainPanel;
-
-    private JButton buttonAddSelectionGroup;
-
-    private JPanel panelColorScheme;
+    private StickySelectionSettingsComponent settingsComponent;
 
 
-    private ValuesRepository savedValues;
-
-    private List<Integer> deletedDataBeans = new ArrayList<>();
-    private JCheckBox checkboxCycleThrough;
-    private JLabel refreshWarning;
-    private JCheckBox checkboxPersistHighlights;
-
-    public StickySelectionPreferences() {
-        savedValues = ServiceManager.getService(ValuesRepository.class);
-    }
-
-    public void setData(ValuesRepository savedValues) {
-        this.savedValues = savedValues;
-
-        checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
-        checkboxPersistHighlights.setSelected(savedValues.getPersistHighlights());
-
-        while (panelColorScheme.getComponentCount() > 0) {
-
-            panelColorScheme.remove(0);
-        }
-        for (int i = 0; i < savedValues.getPaintGroupCount(); i++) {
-            final PaintGroupDataBean paintGroupProperties = savedValues.getPaintGroupProperties(i);
-            addNewPaintGroupRow(paintGroupProperties);
-
-            //setDataForSelectionGroupFrom(savedValues, i);
-        }
-    }
-
-    private void addNewPaintGroupRow(@NotNull final PaintGroupDataBean paintGroupProperties) {
-        final PaintGroupRow paintGroupRow = new PaintGroupRow();
-        paintGroupRow.setData(paintGroupProperties);
-        paintGroupRow.addRemoveClickListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String actionCommand = e.getActionCommand();
-                if (actionCommand.equals("RemovePaintGroup")) {
-                    panelColorScheme.remove(paintGroupRow.$$$getRootComponent$$$());
-                    panelColorScheme.updateUI();
-                }
-                deletedDataBeans.add(paintGroupRow.getDataBeanId());
-                paintGroupRows.remove(paintGroupRow);
-            }
-        });
-        panelColorScheme.add(paintGroupRow.$$$getRootComponent$$$());
-        paintGroupRows.add(paintGroupRow);
-    }
 
     @Nullable
     @Override
     public JComponent createComponent() {
-        setupUI();
-        deletedDataBeans.clear();
-        setData(savedValues);
-        return mainPanel;
+        ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
+
+        settingsComponent = new StickySelectionSettingsComponent(savedValues);
+//        setupUI();
+//        deletedDataBeans.clear();
+
+
+        return settingsComponent.getPanel();
     }
 
     @Override
     public boolean isModified() {
+        ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
 //        System.out.println("isModified()");
-        if (savedValues.getIsCycleThroughEnabled() != checkboxCycleThrough.isSelected()) {
-            refreshWarning.setVisible(false);
+        if (savedValues.getIsCycleThroughEnabled() != settingsComponent.isCycleThrough()) {
+//            refreshWarning.setVisible(false);
             return true;
         }
 
-        if (savedValues.getPersistHighlights() != checkboxPersistHighlights.isSelected()) {
-            refreshWarning.setVisible(false);
+        if (savedValues.getPersistHighlights() != settingsComponent.isPersistHighlights()) {
+//            refreshWarning.setVisible(false);
             return true;
         }
 
+        final List<PaintGroupDataBean> paintGroups = settingsComponent.getPaintGroups();
         final int paintGroupCount = savedValues.getPaintGroupCount();
-        if (paintGroupCount != paintGroupRows.size()) {
-            refreshWarning.setVisible(false);
+        if (paintGroupCount != paintGroups.size()) {
+//            refreshWarning.setVisible(false);
             return true;
         }
 
-        for (int i = 0; i < panelColorScheme.getComponentCount(); i++) {
-            if (paintGroupRows.get(i).isModified(savedValues.getPaintGroupProperties(i))) {
-                refreshWarning.setVisible(false);
+
+
+        for (int i = 0; i < paintGroups.size(); i++) {
+
+            final PaintGroupDataBean paintGroupProperties = savedValues.getPaintGroupProperties(i);
+
+            final PaintGroupDataBean dataBeanUi = paintGroups.get(i);
+
+
+            if (!paintGroupProperties.equals(dataBeanUi)) {
+//                refreshWarning.setVisible(false);
                 return true;
             }
         }
@@ -118,30 +81,12 @@ public class StickySelectionPreferences implements Configurable {
 
     @Override
     public void disposeUIResources() {
-        paintGroupRows.clear();
-        mainPanel = null;
+        settingsComponent = null;
     }
 
-
-    private void setupUI() {
-        final SettingsForm settingsForm = new SettingsForm();
-        mainPanel = settingsForm.$$$getRootComponent$$$();
-
-        panelColorScheme = settingsForm.getPanelColorScheme();
-        panelColorScheme.setLayout(new BoxLayout(panelColorScheme, BoxLayout.Y_AXIS));
-        checkboxCycleThrough = settingsForm.getCheckboxCycleThrough();
-        buttonAddSelectionGroup = settingsForm.getButtonAddSelectionGroup();
-        refreshWarning = settingsForm.getRefreshWarning();
-        checkboxPersistHighlights = settingsForm.getCheckBoxPersistHighlights();
-
-        buttonAddSelectionGroup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                StickySelectionPreferences.this.addNewPaintGroupRow(RandomPaintGroupData.createBean());
-                panelColorScheme.updateUI();
-            }
-        });
-
+    @Override
+    public @Nullable JComponent getPreferredFocusedComponent() {
+        return settingsComponent.getPreferredFocusedComponent();
     }
 
     @Nls
@@ -158,28 +103,35 @@ public class StickySelectionPreferences implements Configurable {
 
     @Override
     public void apply() throws ConfigurationException {
-        if(mainPanel == null) {
-            return;
-        }
+        ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
+
+
 
 //        System.out.println("apply()");
-        savedValues.setIsCycleThroughEnabled(checkboxCycleThrough.isSelected());
-        savedValues.setPersistHighlights(checkboxPersistHighlights.isSelected());
+        savedValues.setIsCycleThroughEnabled(settingsComponent.isCycleThrough());
+        savedValues.setPersistHighlights(settingsComponent.isPersistHighlights());
 
-        refreshWarning.setVisible(true);
+//        refreshWarning.setVisible(true);
+        final List<PaintGroupDataBean> paintGroups = settingsComponent.getPaintGroups();
+        final int storedPaintGroupCount = savedValues.getPaintGroupCount();
 
-        savedValues.removeWithIds(deletedDataBeans);
-        deletedDataBeans.clear();
-        for (int i = 0; i < paintGroupRows.size(); i++) {
-            final PaintGroupRow paintGroupRow = paintGroupRows.get(i);
-            if (savedValues.hasDataBeanId(paintGroupRow.getDataBeanId())) {
-                paintGroupRow.getData(savedValues.getPaintGroupPropertiesWithId(paintGroupRow.getDataBeanId()));
-            } else {
-                savedValues.addNewPaintGroup();
-                paintGroupRow.linkToDataBean(savedValues.getLast());
-            }
+        final List<Integer> paintGroupIds = savedValues.getPaintGroupIds();
+        savedValues.removeWithIds(paintGroupIds);
+
+        for (int i = 0; i < paintGroups.size(); i++) {
+            final PaintGroupDataBean dataBeanUi = paintGroups.get(i);
+
+            final PaintGroupDataBean paintGroupBean = savedValues.addNewPaintGroup();
+//                paintGroupRow.linkToDataBean(savedValues.getLast());
+            paintGroupBean.setShortcut(dataBeanUi.getShortcut());
+            paintGroupBean.setFrameNeeded(dataBeanUi.isFrameNeeded());
+            paintGroupBean.setLayer(dataBeanUi.getHighlightLayer());
+            paintGroupBean.setMarkerNeeded(dataBeanUi.isMarkerNeeded());
+            paintGroupBean.setColor(dataBeanUi.getColor());
         }
-        panelColorScheme.updateUI();
+
+
+//        savedValues.updateUI();
 
         StickySelectionAppComponent applicationComponent = ApplicationManager
                 .getApplication()
@@ -191,27 +143,9 @@ public class StickySelectionPreferences implements Configurable {
 
     @Override
     public void reset() {
-        if (mainPanel == null) {
-            return;
-        }
+        ValuesRepository settings = ValuesRepositoryImpl.getInstance();
+        settingsComponent.setData(settings);
 
-        checkboxCycleThrough.setSelected(savedValues.getIsCycleThroughEnabled());
-        checkboxPersistHighlights.setSelected(savedValues.getPersistHighlights());
-        refreshWarning.setVisible(false);
-
-//        System.out.println("reset()");
-        while (paintGroupRows.size() > savedValues.getPaintGroupCount()) {
-            panelColorScheme.remove(paintGroupRows.get(paintGroupRows.size() - 1).$$$getRootComponent$$$());
-            paintGroupRows.remove(paintGroupRows.size() - 1);
-        }
-        for (int i = 0; i < savedValues.getPaintGroupCount(); i++) {
-            if (paintGroupRows.size() <= i) {
-                addNewPaintGroupRow(savedValues.getPaintGroupProperties(i));
-            } else {
-                paintGroupRows.get(i).setData(savedValues.getPaintGroupProperties(i));
-            }
-        }
-        panelColorScheme.updateUI();
     }
 
 

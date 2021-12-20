@@ -1,2 +1,2 @@
-rootProject.name = "StickySelection"
+rootProject.name = "StickySelection2"
 

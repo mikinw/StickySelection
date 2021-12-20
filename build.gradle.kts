@@ -15,16 +15,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
-
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version.set("2021.2")
 }
-//patchPluginXml {
-//    changeNotes """
-//      Add change notes here.<br>
-//      <em>most HTML tags may be used</em>"""
-//}
 tasks {
     patchPluginXml {
         changeNotes.set("""

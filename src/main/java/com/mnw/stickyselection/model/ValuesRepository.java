@@ -1,6 +1,10 @@
 package com.mnw.stickyselection.model;
 
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+
 import java.util.List;
+
 
 public interface ValuesRepository {
 
@@ -8,8 +12,10 @@ public interface ValuesRepository {
     void setIsPluginEnabled(boolean enabled);
     boolean getIsPluginEnabled();
     int getPaintGroupCount();
-    void addNewPaintGroup();
+    PaintGroupDataBean addNewPaintGroup();
     void removeWithIds(List<Integer> idsToRemove);
+
+    List<Integer> getPaintGroupIds();
     boolean hasDataBeanId(int dataBeanId);
     PaintGroupDataBean getPaintGroupPropertiesWithId(int dataBeanId);
     PaintGroupDataBean getLast();

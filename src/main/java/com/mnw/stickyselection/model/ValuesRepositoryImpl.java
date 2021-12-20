@@ -1,25 +1,28 @@
 package com.mnw.stickyselection.model;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.ui.JBColor;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import com.intellij.util.xmlb.annotations.*;
+import com.intellij.util.xmlb.annotations.Transient;
 import com.mnw.stickyselection.infrastructure.RandomPaintGroupData;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @State(
-        name = "StickySelectionProperties", storages = {
-        @Storage("$APP_CONFIG$/StickySelection.xml")
-})
+        name = "com.mnw.stickyselection.StickySelectionProperties",
+        storages = {@Storage("StickySelection.xml")}
+)
 public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateComponent<ValuesRepositoryImpl> {
 
-    @com.intellij.util.xmlb.annotations.AbstractCollection
-    private java.util.List<PaintGroupDataBean> paintGroupProperties = new ArrayList<>();
+    @com.intellij.util.xmlb.annotations.XCollection
+    private final java.util.List<PaintGroupDataBean> paintGroupProperties = new ArrayList<>();
 
     private int idStore = 1;
 
@@ -28,6 +31,10 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
     private boolean isPersistHighlights = true;
 
     public ValuesRepositoryImpl() {
+    }
+
+    public static ValuesRepository getInstance() {
+        return ApplicationManager.getApplication().getService(ValuesRepository.class);
     }
 
     @Override
@@ -54,10 +61,11 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
 
     @Override
     @Transient
-    public void addNewPaintGroup() {
+    public PaintGroupDataBean addNewPaintGroup() {
         final PaintGroupDataBean bean = RandomPaintGroupData.createBean();
         bean.setId(idStore++);
         paintGroupProperties.add(bean);
+        return bean;
     }
 
     @Override
@@ -72,6 +80,19 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
                 iterator.remove();
             }
         }
+    }
+
+    @Override
+    public List<Integer> getPaintGroupIds() {
+        final Iterator<PaintGroupDataBean> iterator = paintGroupProperties.iterator();
+        final List<Integer> idList = new ArrayList<>();
+
+        while (iterator.hasNext()) {
+            final PaintGroupDataBean next = iterator.next();
+            idList.add(next.getId());
+        }
+
+        return idList;
     }
 
     @Override
@@ -130,11 +151,11 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
     }
 
     @Override
-    public void loadState(ValuesRepositoryImpl state) {
+    public void loadState(@NotNull ValuesRepositoryImpl state) {
         XmlSerializerUtil.copyBean(state, this);
         for (PaintGroupDataBean paintGroupProperty : paintGroupProperties) {
             if (paintGroupProperty.getColor() == null) {
-                paintGroupProperty.setColor(Color.CYAN);
+                paintGroupProperty.setColor(JBColor.CYAN);
             }
             paintGroupProperty.setId(idStore++);
         }

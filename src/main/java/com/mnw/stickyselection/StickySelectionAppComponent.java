@@ -25,6 +25,7 @@ import com.mnw.stickyselection.actions.StickyEditorAction;
 import com.mnw.stickyselection.model.EditorHighlightsForPaintGroup;
 import com.mnw.stickyselection.model.StoredHighlightsRepository;
 import com.mnw.stickyselection.model.ValuesRepository;
+import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -38,15 +39,12 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
     private static final String PLUGIN_ACTION_ID = "com.mnw.stickyselection";
     private static final String ACTION_ID_PREFIX = "com.mnw.stickyselection.actions.";
     private static final int ACTION_ICON_SIZE = 12;
-    private HashMap<Editor, StickySelectionEditorComponent> editors = new HashMap<>();
+    private final HashMap<Editor, StickySelectionEditorComponent> editors = new HashMap<>();
 
-    private ValuesRepository savedValues;
 
 
     @Override
     public void initComponent() {
-        savedValues = ServiceManager.getService(ValuesRepository.class);
-
         //Add listener for editors
         EditorFactory.getInstance().addEditorFactoryListener(this, this);
 
@@ -144,7 +142,7 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
     }
 
     public void updateRegisteredActions() {
-        final int paintGroupCount = savedValues.getPaintGroupCount();
+        final int paintGroupCount = ValuesRepositoryImpl.getInstance().getPaintGroupCount();
         final ActionManager actionManager = ActionManager.getInstance();
 
         final String paintSelectionInstantAction = "PaintSelectionInstantAction.";
@@ -197,6 +195,7 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
             final AnAction action = actionManager.getAction(ACTION_ID_PREFIX + instantAction + i);
             if (action != null) {
                 final Icon currentIcon = action.getTemplatePresentation().getIcon();
+                ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
                 if (currentIcon instanceof ColorIcon) {
                     if (!((ColorIcon)currentIcon).getIconColor().equals(savedValues.getPaintGroupProperties(i).getColor())) {
                         action.getTemplatePresentation().setIcon(createActionIcon(i));
@@ -217,6 +216,7 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
 
     @NotNull
     private Icon createActionIcon(int i) {
+        ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
         final Color color = savedValues.getPaintGroupProperties(i).getColor();
         return new ColorIcon(ACTION_ICON_SIZE, color);
     }
