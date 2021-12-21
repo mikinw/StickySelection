@@ -5,25 +5,18 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.event.EditorFactoryEvent;
-import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.extensions.PluginId;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.ColorIcon;
 import com.mnw.stickyselection.actions.ClearPaintGroupInstantAction;
 import com.mnw.stickyselection.actions.ConvertPaintGroupInstantAction;
 import com.mnw.stickyselection.actions.PaintSelectionInstantAction;
 import com.mnw.stickyselection.actions.StickyEditorAction;
-import com.mnw.stickyselection.model.EditorHighlightsForPaintGroup;
-import com.mnw.stickyselection.model.StoredHighlightsRepository;
 import com.mnw.stickyselection.model.ValuesRepository;
 import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import org.jetbrains.annotations.NotNull;
@@ -34,67 +27,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StickySelectionAppComponent implements ApplicationComponent, EditorFactoryListener, Disposable {
+public class StickySelectionAppComponent implements StartupActivity, Disposable {
 
     private static final String PLUGIN_ACTION_ID = "com.mnw.stickyselection";
     private static final String ACTION_ID_PREFIX = "com.mnw.stickyselection.actions.";
     private static final int ACTION_ICON_SIZE = 12;
-    private final HashMap<Editor, StickySelectionEditorComponent> editors = new HashMap<>();
+    private final Map<Editor, StickySelectionEditorComponent> editors = new HashMap<>();
 
-
-
-    @Override
-    public void initComponent() {
-        //Add listener for editors
-        EditorFactory.getInstance().addEditorFactoryListener(this, this);
-
-        updateRegisteredActions();
-
-    }
-
-    @Override
-    public void disposeComponent() {
-        //Remove listener for editors
-        editors.clear();
-    }
-
-    @NotNull
-    @Override
-    public String getComponentName() {
-        return("StickySelectionAppComponent");
-    }
-
-    @Override
-    public void editorCreated(@NotNull EditorFactoryEvent editorFactoryEvent) {
-        final Editor editor = editorFactoryEvent.getEditor();
-
-        StickySelectionEditorComponent editorHighlighter = new StickySelectionEditorComponent(editor);
-        editors.put(editorFactoryEvent.getEditor(), editorHighlighter);
-
-        final Project project = editor.getProject();
-        if (project == null) {
-            return;
-        }
-
-        final StoredHighlightsRepository projectSettings = ServiceManager
-                .getService(project, StoredHighlightsRepository.class);
-
-        if (ServiceManager.getService(ValuesRepository.class).getPersistHighlights()) {
-            final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
-            if (file == null) {
-                return;
-            }
-            final String path = file.getPath();
-
-            final Map<Integer, EditorHighlightsForPaintGroup> editorHighlights = projectSettings
-                    .getEditorHighlights(path);
-
-
-            editorHighlighter.loadHighlights(editorHighlights);
-        } else {
-            projectSettings.clear();
-        }
-
+    public StickySelectionAppComponent() {
         ApplicationManager.getApplication().getMessageBus().connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, new FileDocumentManagerListener() {
             @Override
             public void beforeAllDocumentsSaving() {
@@ -125,14 +65,11 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
     }
 
     @Override
-    public void editorReleased(@NotNull EditorFactoryEvent editorFactoryEvent) {
-        StickySelectionEditorComponent editorHighlighter = editors.remove(editorFactoryEvent.getEditor());
-        if(editorHighlighter == null) {
-            return;
-        }
+    public void runActivity(@NotNull final Project project) {
+        updateRegisteredActions();
 
-        editorHighlighter.dispose();
     }
+
 
     public void updateAllHighlighters() {
         for (StickySelectionEditorComponent editorComponent : editors.values()) {
@@ -227,7 +164,23 @@ public class StickySelectionAppComponent implements ApplicationComponent, Editor
 
     @Override
     public void dispose() {
-        disposeComponent();
+        editors.forEach((e, se) -> se.dispose());
+        editors.clear();
+
+    }
+
+    void editorReleased(final Editor editor) {
+        StickySelectionEditorComponent editorHighlighter = editors.remove(editor);
+        if(editorHighlighter == null) {
+            return;
+        }
+
+        editorHighlighter.dispose();
+
+    }
+
+    public void editorCreated(final Editor editor, final StickySelectionEditorComponent editorHighlighter) {
+        editors.put(editor, editorHighlighter);
     }
 
     private interface InstantActionFactory {
