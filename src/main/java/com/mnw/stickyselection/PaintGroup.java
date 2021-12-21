@@ -1,9 +1,7 @@
 package com.mnw.stickyselection;
 
 import com.intellij.openapi.editor.ex.MarkupModelEx;
-import com.intellij.openapi.editor.ex.RangeHighlighterEx;
 import com.intellij.openapi.editor.markup.*;
-import com.intellij.util.Consumer;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 
 import java.util.ArrayList;

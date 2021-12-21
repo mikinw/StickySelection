@@ -1,10 +1,10 @@
 package com.mnw.stickyselection.infrastructure;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.popup.*;
 import com.intellij.openapi.util.text.StringUtil;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 import com.mnw.stickyselection.model.ValuesRepository;
+import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import com.mnw.stickyselection.preferences.ColorImage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +24,7 @@ public class PaintGroupListPopupStep implements ListPopupStep<PaintGroupDataBean
     public PaintGroupListPopupStep(String title, PerformRunnableFactory runnableFactory) {
         this.title = title;
         this.runnableFactory = runnableFactory;
-        final ValuesRepository valuesRepository = ServiceManager.getService(ValuesRepository.class);
+        final ValuesRepository valuesRepository = ValuesRepositoryImpl.getInstance();
 
         list = new ArrayList<>(valuesRepository.getPaintGroupCount());
         for (int i = 0; i < valuesRepository.getPaintGroupCount(); i++) {

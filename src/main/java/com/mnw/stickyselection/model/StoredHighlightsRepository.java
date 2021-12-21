@@ -1,11 +1,11 @@
 package com.mnw.stickyselection.model;
 
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.Transient;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
 
     @Override
     @Transient
-    public void loadState(StoredHighlightsRepository state) {
+    public void loadState(@NotNull StoredHighlightsRepository state) {
         XmlSerializerUtil.copyBean(state, this);
 
     }
@@ -47,7 +47,7 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
 
     @Transient
     public void addOneHighlight(String filePath, int paintGroup, int startOffset, int endOffset) {
-        if (!ServiceManager.getService(ValuesRepository.class).getPersistHighlights()) {
+        if (!ValuesRepositoryImpl.getInstance().getPersistHighlights()) {
             return;
         }
         if (!editorHighlights.containsKey(filePath)) {
@@ -63,7 +63,7 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
 
     @Transient
     public void removeHighlightsOfPaintGroup(String filePath, int paintGroup) {
-        if (!ServiceManager.getService(ValuesRepository.class).getPersistHighlights()) {
+        if (!ValuesRepositoryImpl.getInstance().getPersistHighlights()) {
             return;
         }
         if (!editorHighlights.containsKey(filePath)) {
@@ -85,7 +85,7 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
 
     @Transient
     public void removeLastNOfPaintGroup(String filePath, int paintGroup, int lastN) {
-        if (!ServiceManager.getService(ValuesRepository.class).getPersistHighlights()) {
+        if (!ValuesRepositoryImpl.getInstance().getPersistHighlights()) {
             return;
         }
         if (!editorHighlights.containsKey(filePath)) {

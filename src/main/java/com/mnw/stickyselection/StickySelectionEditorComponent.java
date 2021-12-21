@@ -54,7 +54,7 @@ public class StickySelectionEditorComponent implements Disposable {
         project = editor.getProject();
 
 
-        ValuesRepository savedValues = ServiceManager.getService(ValuesRepository.class);
+        ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
 
         for (int i = 0; i < savedValues.getPaintGroupCount(); i++) {
             paintGroups.add(new PaintGroup(savedValues.getPaintGroupProperties(i)));
@@ -107,7 +107,7 @@ public class StickySelectionEditorComponent implements Disposable {
 
 
     public void paintSelection(int paintGroup) {
-        PaintGroupDataBean paintGroupProperties = ServiceManager.getService(ValuesRepository.class).getPaintGroupProperties(paintGroup);
+        PaintGroupDataBean paintGroupProperties = ValuesRepositoryImpl.getInstance().getPaintGroupProperties(paintGroup);
 
         if (editor.getCaretModel().getCaretCount() > 1) {
             final List<CaretState> caretsAndSelections = editor.getCaretModel().getCaretsAndSelections();
@@ -156,7 +156,7 @@ public class StickySelectionEditorComponent implements Disposable {
 
         editor.getSelectionModel().removeSelection(REMOVE_ALL_CARETS);
         setUndoEnabled(!undoList.isEmpty());
-        Collections.sort(paintGroups.get(paintGroup).highlighters, new Comparator<RangeHighlighter>() {
+        paintGroups.get(paintGroup).highlighters.sort(new Comparator<RangeHighlighter>() {
             @Override
             public int compare(RangeHighlighter o1, RangeHighlighter o2) {
                 return ((Integer)o1.getStartOffset()).compareTo(o2.getStartOffset());
@@ -246,9 +246,9 @@ public class StickySelectionEditorComponent implements Disposable {
                 continue;
             }
 
-            final ValuesRepository valuesRepository = ServiceManager.getService(ValuesRepository.class);
+            final ValuesRepository valuesRepository = ValuesRepositoryImpl.getInstance();
             if (valuesRepository.getPaintGroupCount() - 1 < paintGroup) {
-                final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
+                final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
                 // TODO: 28/11/2017 ask the user if it should be removed (and only remove it outside of the loop)
                 //projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
                 continue;
@@ -277,7 +277,7 @@ public class StickySelectionEditorComponent implements Disposable {
 
     public void clearPaintGroup(int paintGroup) {
         paintGroups.get(paintGroup).clear(editor.getMarkupModel());
-        final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
+        final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
         projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
 
         if (paintGroup == lastPaintedGroup) {
@@ -293,7 +293,7 @@ public class StickySelectionEditorComponent implements Disposable {
     }
 
     public void updateAllHighlighters() {
-        final ValuesRepository savedValues = ServiceManager.getService(ValuesRepository.class);
+        final ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
 
         final List<PaintGroupDataBean> newPaintGroupBeans = new ArrayList<>(savedValues.getPaintGroupCount());
         final List<Integer> missingPaintGroups = new ArrayList<>(paintGroups.size());
@@ -352,7 +352,7 @@ public class StickySelectionEditorComponent implements Disposable {
             paintGroups.get(lastPaintedGroup).remove(rangeHighlighter);
             editor.getMarkupModel().removeHighlighter(rangeHighlighter);
         }
-        final StoredHighlightsRepository projectSettings = ServiceManager.getService(project, StoredHighlightsRepository.class);
+        final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
         projectSettings.removeLastNOfPaintGroup(filePath, lastPaintedGroup, undoList.size());
         clearUndoFields();
     }
@@ -391,7 +391,7 @@ public class StickySelectionEditorComponent implements Disposable {
 
     public void navigateToPaint(final SuggestCaret suggestCaret,
                                 final FindClosestHighlighter findClosestHighlighter) {
-        final boolean isCycleThroughEnabled = ServiceManager.getService(ValuesRepository.class).getIsCycleThroughEnabled();
+        final boolean isCycleThroughEnabled = ValuesRepositoryImpl.getInstance().getIsCycleThroughEnabled();
 
         final CaretModel caretModel = editor.getCaretModel();
 
@@ -421,7 +421,7 @@ public class StickySelectionEditorComponent implements Disposable {
     }
 
     public void navigateToClosestPaint(final FindClosestHighlighter findClosestHighlighter) {
-        final ValuesRepository savedValues = ServiceManager.getService(ValuesRepository.class);
+        final ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
 
         final int currentCaret = editor.getCaretModel().getOffset();
         CurrentBest currentBest = new CurrentBest(editor.getDocument().getTextLength(), currentCaret);

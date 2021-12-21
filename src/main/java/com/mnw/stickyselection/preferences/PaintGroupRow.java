@@ -1,10 +1,10 @@
 package com.mnw.stickyselection.preferences;
 
+import com.intellij.ui.JBColor;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
-import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class PaintGroupRow {
@@ -15,8 +15,6 @@ public class PaintGroupRow {
     private JTextField textFieldLayer;
     private JCheckBox checkBoxFrame;
     private JPanel rowPanel;
-
-    private int dataBeanId;
 
     public PaintGroupRow() {
 
@@ -31,7 +29,6 @@ public class PaintGroupRow {
         textFieldLayer.setText(String.valueOf(data.getHighlightLayer()));
         checkBoxMarker.setSelected(data.isMarkerNeeded());
         colorButton.setColor(data.getColor());
-        dataBeanId = data.getId();
     }
 
     public PaintGroupDataBean getData() {
@@ -39,48 +36,17 @@ public class PaintGroupRow {
 
         paintGroupDataBean.setShortcut(textFieldShortcut.getText());
         paintGroupDataBean.setFrameNeeded(checkBoxFrame.isSelected());
-        paintGroupDataBean.setLayer(Integer.parseInt(textFieldLayer.getText()));
+        paintGroupDataBean.setHighlightLayer(Integer.parseInt(textFieldLayer.getText()));
         paintGroupDataBean.setMarkerNeeded(checkBoxMarker.isSelected());
         paintGroupDataBean.setColor(colorButton.getColor());
 
         return paintGroupDataBean;
     }
 
-    public int getDataBeanId() {
-        return dataBeanId;
-    }
-
-    public void linkToDataBean(PaintGroupDataBean data) {
-//        getData(data);
-        this.dataBeanId = data.getId();
-    }
-
-    public boolean isModified(PaintGroupDataBean data) {
-        if (textFieldShortcut.getText() != null
-                ? !textFieldShortcut.getText().equals(data.getShortcut())
-                : data.getShortcut() != null) {
-            return true;
-        }
-        if (checkBoxFrame.isSelected() != data.isFrameNeeded()) {
-            return true;
-        }
-        if (!textFieldLayer.getText().equals(String.valueOf(data.getHighlightLayer()))) {
-            return true;
-        }
-        if (checkBoxMarker.isSelected() != data.isMarkerNeeded()) {
-            return true;
-        }
-        if (colorButton.getColor() != null
-                ? !colorButton.getColor().equals(data.getColor())
-                : data.getColor() != null) {
-            return true;
-        }
-        return false;
-    }
 
     private void createUIComponents() {
         colorButton = new ColorButton();
-        colorButton.setColor(Color.white);
+        colorButton.setColor(JBColor.WHITE);
     }
 
     public void addRemoveClickListener(final ActionListener listener) {

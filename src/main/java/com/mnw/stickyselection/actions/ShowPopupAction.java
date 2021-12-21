@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.mnw.stickyselection.infrastructure.PaintGroupListPopupStep;
 import com.mnw.stickyselection.model.ValuesRepository;
+import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -28,7 +29,7 @@ public abstract class ShowPopupAction extends StickyEditorAction {
 
     @Override
     protected void actionImpl() {
-        final int paintGroupCount = ServiceManager.getService(ValuesRepository.class).getPaintGroupCount();
+        final int paintGroupCount = ValuesRepositoryImpl.getInstance().getPaintGroupCount();
         if (paintGroupCount > 1) {
             JBPopupFactory.getInstance()
                     .createListPopup(createListStep())
