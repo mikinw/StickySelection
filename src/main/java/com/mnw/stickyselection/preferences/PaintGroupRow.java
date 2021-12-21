@@ -20,7 +20,7 @@ public class PaintGroupRow {
 
         ((AbstractDocument) textFieldLayer.getDocument()).setDocumentFilter(new OnlyNumbersDocumentFilter());
 
-        ((AbstractDocument) textFieldShortcut.getDocument()).setDocumentFilter(new OnlyOneCharacterFilter());
+        ((AbstractDocument) textFieldShortcut.getDocument()).setDocumentFilter(new AtMostOneCharacterFilter());
     }
 
     public void setData(PaintGroupDataBean data) {
