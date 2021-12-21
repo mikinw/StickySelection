@@ -20,7 +20,7 @@ public class RandomPaintGroupData {
         final PaintGroupDataBean paintGroupDataBean = new PaintGroupDataBean();
         paintGroupDataBean.setColor(hsbColor);
         paintGroupDataBean.setMarkerNeeded(true);
-        paintGroupDataBean.setLayer(random.nextInt(65) * 100);
+        paintGroupDataBean.setHighlightLayer(random.nextInt(65) * 100);
         paintGroupDataBean.setFrameNeeded(random.nextBoolean());
         final String shortcut
                 = random.nextFloat() < 0.278f

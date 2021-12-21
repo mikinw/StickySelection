@@ -188,11 +188,14 @@
         />
         <editorFactoryListener implementation="com.mnw.stickyselection.EditorFactoryListener" />
         <projectService serviceImplementation="com.mnw.stickyselection.model.StoredHighlightsRepository"/>
-        <applicationService
-                serviceInterface="com.mnw.stickyselection.model.ValuesRepository"
-                serviceImplementation="com.mnw.stickyselection.model.ValuesRepositoryImpl"
-        />
         <postStartupActivity implementation="com.mnw.stickyselection.StickySelectionAppComponent" />
     </extensions>
+
+    <application-components>
+        <component>
+            <implementation-class>com.mnw.stickyselection.model.ValuesRepositoryImpl</implementation-class>
+            <interface-class>com.mnw.stickyselection.model.ValuesRepository</interface-class>
+        </component>
+    </application-components>
 </idea-plugin>
 

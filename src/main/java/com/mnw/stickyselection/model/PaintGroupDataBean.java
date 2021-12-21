@@ -1,5 +1,6 @@
 package com.mnw.stickyselection.model;
 
+import com.intellij.ui.JBColor;
 import com.intellij.util.xmlb.annotations.Transient;
 
 import java.awt.*;
@@ -7,7 +8,7 @@ import java.awt.*;
 public class PaintGroupDataBean {
     private String shortcut;
     private boolean frameNeeded;
-    private int layer;
+    private int layer = 4200;
     private boolean markerNeeded;
     private Color color;
     private int id;
@@ -34,7 +35,7 @@ public class PaintGroupDataBean {
         return layer;
     }
 
-    public void setLayer(final int layer) {
+    public void setHighlightLayer(final int layer) {
         this.layer = layer;
     }
 
@@ -58,7 +59,7 @@ public class PaintGroupDataBean {
 
 
     public String getColorString() {
-        return createColorString(color != null ? color : Color.cyan);
+        return createColorString(color != null ? color : JBColor.CYAN);
     }
 
     private static String createColorString(Color color) {

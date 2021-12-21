@@ -34,7 +34,7 @@ public class ValuesRepositoryImpl implements ValuesRepository, PersistentStateCo
     }
 
     public static ValuesRepository getInstance() {
-        return ApplicationManager.getApplication().getService(ValuesRepository.class);
+        return ApplicationManager.getApplication().getComponent(ValuesRepository.class);
     }
 
     @Override

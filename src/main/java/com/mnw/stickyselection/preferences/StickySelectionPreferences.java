@@ -1,23 +1,17 @@
 package com.mnw.stickyselection.preferences;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.mnw.stickyselection.StickySelectionAppComponent;
 import com.mnw.stickyselection.StickySelectionSettingsComponent;
-import com.mnw.stickyselection.infrastructure.RandomPaintGroupData;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 import com.mnw.stickyselection.model.ValuesRepository;
 import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
@@ -125,7 +119,7 @@ public class StickySelectionPreferences implements Configurable {
 //                paintGroupRow.linkToDataBean(savedValues.getLast());
             paintGroupBean.setShortcut(dataBeanUi.getShortcut());
             paintGroupBean.setFrameNeeded(dataBeanUi.isFrameNeeded());
-            paintGroupBean.setLayer(dataBeanUi.getHighlightLayer());
+            paintGroupBean.setHighlightLayer(dataBeanUi.getHighlightLayer());
             paintGroupBean.setMarkerNeeded(dataBeanUi.isMarkerNeeded());
             paintGroupBean.setColor(dataBeanUi.getColor());
         }
