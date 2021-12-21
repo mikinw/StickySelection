@@ -10,6 +10,10 @@ public class SuggestCaretForNextNav implements SuggestCaret {
     @Override
     public int findCaretInPaintGroup(int currentCaret, ArrayList<RangeHighlighter> highlighters,
                                      boolean isCycleThroughEnabled) {
+        if (highlighters.isEmpty()) {
+            return -1;
+        }
+
         for (int i = 0; i < highlighters.size() - 1; i++) {
             if (caretIsInside(currentCaret, highlighters.get(i))) {
                 int next = i + 1;
