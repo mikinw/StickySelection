@@ -189,6 +189,9 @@
         <editorFactoryListener implementation="com.mnw.stickyselection.EditorFactoryListener" />
         <projectService serviceImplementation="com.mnw.stickyselection.model.StoredHighlightsRepository"/>
         <postStartupActivity implementation="com.mnw.stickyselection.StickySelectionAppComponent" />
+        <notificationGroup displayType="BALLOON"
+                           id="StickySelection warnings"
+                           />
     </extensions>
 
     <application-components>
