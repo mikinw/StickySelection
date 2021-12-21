@@ -3,8 +3,8 @@ plugins {
     java
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "com.mnw.stickyselection"
+version = "2.5-SNAPSHOT"
 
 repositories {
     mavenCentral()
