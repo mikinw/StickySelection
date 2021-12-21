@@ -41,7 +41,7 @@ public class StickySelectionAppComponent implements StartupActivity, Disposable 
                 for (StickySelectionEditorComponent editorComponent : editors.values()) {
                     editorComponent.persistHighlights();
                 }
-                //editors.values().forEach(StickySelectionEditorComponent::persistHighlights);
+                editors.values().forEach(StickySelectionEditorComponent::persistHighlights);
             }
 
             @Override
@@ -72,10 +72,7 @@ public class StickySelectionAppComponent implements StartupActivity, Disposable 
 
 
     public void updateAllHighlighters() {
-        for (StickySelectionEditorComponent editorComponent : editors.values()) {
-            editorComponent.updateAllHighlighters();
-        }
-        //editors.values().forEach(StickySelectionEditorComponent::updateAllHighlighters);
+        editors.values().forEach(StickySelectionEditorComponent::updateAllHighlighters);
     }
 
     public void updateRegisteredActions() {

@@ -31,8 +31,7 @@ public class EditorFactoryListener implements com.intellij.openapi.editor.event.
             return;
         }
 
-        final StoredHighlightsRepository projectSettings = ServiceManager
-                .getService(project, StoredHighlightsRepository.class);
+        final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
 
         if (ValuesRepositoryImpl.getInstance().getPersistHighlights()) {
             final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());

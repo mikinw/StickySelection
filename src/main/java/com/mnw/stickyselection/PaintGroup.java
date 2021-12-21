@@ -14,7 +14,7 @@ public class PaintGroup {
 
     public PaintGroup(PaintGroupDataBean paintGroupProperties) {
         highlighters = new ArrayList<>();
-        this.paintGroupProperties = paintGroupProperties;
+        this.paintGroupProperties = paintGroupProperties.copy();
     }
 
     public void add(RangeHighlighter rangeHighlighter) {
@@ -23,7 +23,7 @@ public class PaintGroup {
     }
 
     public void clear(MarkupModel markupModel) {
-        final ArrayList<RangeHighlighter> copy = (ArrayList<RangeHighlighter>) highlighters.clone();
+        final ArrayList<RangeHighlighter> copy = new ArrayList<>(highlighters);
         for(RangeHighlighter highlight : copy) {
             markupModel.removeHighlighter(highlight);
         }
@@ -44,11 +44,11 @@ public class PaintGroup {
         return false;
     }
 
-    public boolean hasSameDataBean(PaintGroupDataBean paintGroupProperties) {
-        return paintGroupProperties == this.paintGroupProperties;
+    boolean hasSameDataBean(PaintGroupDataBean paintGroupProperties) {
+        return this.paintGroupProperties.equals(paintGroupProperties);
     }
 
-    public void repaint(PaintGroupDataBean paintGroupProperties, MarkupModel markupModel) {
+    void repaint(PaintGroupDataBean paintGroupProperties, MarkupModel markupModel) {
         this.paintGroupProperties = paintGroupProperties;
         if (highlighters.isEmpty()) { return; }
 
@@ -71,7 +71,7 @@ public class PaintGroup {
         } else {
 
             final List<RangeHighlighter> newHighLighters = new ArrayList<>(highlighters.size());
-            final ArrayList<RangeHighlighter> copy = (ArrayList<RangeHighlighter>) highlighters.clone();
+            final ArrayList<RangeHighlighter> copy = new ArrayList<>(highlighters);
 
             for (RangeHighlighter highlighter : copy) {
                 final int startOffset = highlighter.getStartOffset();

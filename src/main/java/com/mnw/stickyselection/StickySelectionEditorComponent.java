@@ -201,8 +201,7 @@ public class StickySelectionEditorComponent implements Disposable {
         highlighterPaintGroupMap.put(rangeHighlighter, paintGroup);
 
         if (persist) {
-            final StoredHighlightsRepository projectSettings = ServiceManager
-                    .getService(project, StoredHighlightsRepository.class);
+            final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
             projectSettings.addOneHighlight(filePath,
                                             paintGroup,
                                             rangeHighlighter.getStartOffset(),
@@ -293,48 +292,32 @@ public class StickySelectionEditorComponent implements Disposable {
     }
 
     public void updateAllHighlighters() {
-        final ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
+        final ValuesRepository repoValues = ValuesRepositoryImpl.getInstance();
 
-        final List<PaintGroupDataBean> newPaintGroupBeans = new ArrayList<>(savedValues.getPaintGroupCount());
-        final List<Integer> missingPaintGroups = new ArrayList<>(paintGroups.size());
-        for (int i = 0; i < paintGroups.size(); i++) {
-            missingPaintGroups.add(i);
-        }
+        final int paintedGroupSize = paintGroups.size();
 
-        for (int i = 0; i < savedValues.getPaintGroupCount(); i++) {
-            final PaintGroupDataBean paintGroupProperties = savedValues.getPaintGroupProperties(i);
-            if (!repaintIfExisted(missingPaintGroups, paintGroupProperties)) {
-                newPaintGroupBeans.add(paintGroupProperties);
+        if (paintedGroupSize < repoValues.getPaintGroupCount()) {
+            for (int i = paintedGroupSize; i < repoValues.getPaintGroupCount(); i++) {
+                paintGroups.add(new PaintGroup(repoValues.getPaintGroupProperties(i)));
             }
         }
 
-        Collections.sort(missingPaintGroups, Collections.reverseOrder());
-        //missingPaintGroups.sort(Collections.reverseOrder());
-        for (Integer missingPaintGroup : missingPaintGroups) {
-            paintGroups.get(missingPaintGroup).clear(editor.getMarkupModel());
-            paintGroups.remove((int)missingPaintGroup);
-        }
 
-        for (PaintGroupDataBean newPaintGroup : newPaintGroupBeans) {
-            paintGroups.add(new PaintGroup(newPaintGroup));
-        }
-    }
+        for (int i = 0; i < repoValues.getPaintGroupCount(); i++) {
+            final PaintGroupDataBean paintGroupProperties = repoValues.getPaintGroupProperties(i);
 
-    /**
-     *
-     * @param missingPaintGroups
-     * @param paintGroupProperties
-     * @return true if paintGroupDataBean existed before. false if the paintGroupDataBean is a new one.
-     */
-    private boolean repaintIfExisted(Collection<Integer> missingPaintGroups, PaintGroupDataBean paintGroupProperties) {
-        for (Integer missingPaintGroup : missingPaintGroups) {
-            if (paintGroups.get(missingPaintGroup).hasSameDataBean(paintGroupProperties)) {
-                missingPaintGroups.remove(missingPaintGroup);
-                paintGroups.get(missingPaintGroup).repaint(paintGroupProperties, editor.getMarkupModel());
-                return true;
+            final PaintGroup paintGroup = paintGroups.get(i);
+            if (!paintGroup.hasSameDataBean(paintGroupProperties)) {
+                paintGroup.repaint(paintGroupProperties, editor.getMarkupModel());
             }
         }
-        return false;
+
+
+        for (int i = paintedGroupSize - 1; i >= repoValues.getPaintGroupCount(); i--) {
+            paintGroups.get(i).clear(editor.getMarkupModel());
+            paintGroups.remove(i);
+        }
+
     }
 
     public void undoLastPaint() {
@@ -480,8 +463,7 @@ public class StickySelectionEditorComponent implements Disposable {
 
     public void persistHighlights() {
         if (documentModified) {
-            final StoredHighlightsRepository projectSettings = ServiceManager
-                    .getService(project, StoredHighlightsRepository.class);
+            final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
 
             final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
             if (file == null) {

@@ -118,4 +118,15 @@ public class PaintGroupDataBean {
     public int getId() {
         return id;
     }
+
+    @Transient
+    public PaintGroupDataBean copy() {
+        final PaintGroupDataBean ret = new PaintGroupDataBean();
+        ret.color = color;
+        ret.frameNeeded = frameNeeded;
+        ret.layer = layer;
+        ret.markerNeeded = markerNeeded;
+        ret.shortcut = shortcut;
+        return ret;
+    }
 }
