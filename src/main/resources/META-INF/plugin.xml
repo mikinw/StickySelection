@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.mnw.stickyselection</id>
     <name>Sticky Selection</name>
-    <version>2.5</version>
+    <version>3.0</version>
     <vendor email="mikinw.development@gmail.com" url="https://github.com/mikinw/StickySelection">MikiNW</vendor>
 
     <description><![CDATA[
@@ -44,7 +44,7 @@
       <li>Press <em>Ctrl + Alt + F10</em> than <em>F9</em> to clear a selection (showing popup for selecting Paint Group).
       <li>Press <em>Ctrl + Alt + F10</em> than <em>F10</em> to clear all selections.
       <li>Press <em>Ctrl + Alt + F8</em> to undo last selection.
-      <li>Press <em>Ctrl + Alt + quote</em> to navigate to next Paint in the current Paint Group.
+      <li>Press <em>Ctrl + Alt + quote</em> to navigate to next Paint in the current Paint Group (it the cursor is not in a Paint Group first it finds the closest onw).
       <li>Press <em>Ctrl + Alt + semicolon</em> to navigate to previous Paint in the current Paint Group.
       </ul>
       <br>Note: control + alt on Mac is (I guess) meta + alt
@@ -94,6 +94,9 @@
       v2.2 fixed: exception during first start, fixed: incorrectly restored Paint after reopening the IDE (when the document has changed) <br>
       v2.3 fixed: caret can jump to deleted highlight, fixed: preferences page does not respond to Paint Group changes, fixed: exception after "paint, convert, paint, undo" <br>
       v2.4 fixed: exception when changing color, fixed: lingering highlights when changing color <br>
+      v3.0 refactored components that were using deprecated api, increased min version, migrated to gradle, fixed: layer is not saved, fixed: highlights
+      are not updated when changing settings, fixed: exception when deleting shortcut or layer field in settings, alpha channel is saved with the color, fixed: exception when using next/prev  <br>
+      Note! If you have set paint groups, please manually check StickySelection.xml in your <Idea user dir>/config/options, because some those values are not reachable by the new version.
       ]]>
     </change-notes>
 
