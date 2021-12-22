@@ -180,6 +180,11 @@ public class StickySelectionEditorComponent implements Disposable {
 
     private void addRangeHighlighter(int paintGroup, PaintGroupDataBean paintGroupProperties,
                                      TextAttributes textAttributes, int startOffset, int endOffset, boolean persist) {
+        if (startOffset < 0 || endOffset < 0 || endOffset <= startOffset) {
+            // don't try to add invalid range
+            return;
+        }
+
         final RangeHighlighter rangeHighlighter = editor.getMarkupModel().addRangeHighlighter(
                 startOffset,
                 endOffset,
@@ -203,9 +208,9 @@ public class StickySelectionEditorComponent implements Disposable {
         if (persist) {
             final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
             projectSettings.addOneHighlight(filePath,
-                                            paintGroup,
-                                            rangeHighlighter.getStartOffset(),
-                                            rangeHighlighter.getEndOffset());
+                    paintGroup,
+                    rangeHighlighter.getStartOffset(),
+                    rangeHighlighter.getEndOffset());
         }
     }
 
@@ -447,9 +452,11 @@ public class StickySelectionEditorComponent implements Disposable {
 
             final ArrayList<RangeHighlighter> highlighters = paintGroups.get(paintGroup).highlighters;
             for (RangeHighlighter highlighter : highlighters) {
-                final HighlightOffset highlightOffset = new HighlightOffset(highlighter.getStartOffset(),
-                                                                            highlighter.getEndOffset());
-                highlightsForPaintGroup.add(highlightOffset);
+                if (highlighter.getStartOffset() >= 0 && highlighter.getEndOffset() >= 0 && highlighter.getEndOffset() > highlighter.getStartOffset()) {
+                    final HighlightOffset highlightOffset = new HighlightOffset(highlighter.getStartOffset(),
+                            highlighter.getEndOffset());
+                    highlightsForPaintGroup.add(highlightOffset);
+                }
             }
             /*paintGroups.get(paintGroup).highlighters.addAll(
                     highlighters.stream()
