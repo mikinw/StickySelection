@@ -15,6 +15,10 @@ public class PaintGroupRow {
     private JTextField textFieldLayer;
     private JCheckBox checkBoxFrame;
     private JPanel rowPanel;
+    private JButton buttonUp;
+
+    private ActionListener removeListener;
+    private ActionListener upListener;
 
     public PaintGroupRow() {
 
@@ -51,11 +55,24 @@ public class PaintGroupRow {
     }
 
     public void addRemoveClickListener(final ActionListener listener) {
+        removeButton.removeActionListener(removeListener);
         removeButton.addActionListener(listener);
+        removeListener = listener;
+
+    }
+
+    public void addUpClickListener(final ActionListener listener) {
+        buttonUp.removeActionListener(upListener);
+        upListener = listener;
+        buttonUp.addActionListener(listener);
 
     }
 
 
 
     public JComponent getRootComponent() { return rowPanel; }
+
+    public void setUpEnabled(final boolean b) {
+            buttonUp.setEnabled(b);
+    }
 }

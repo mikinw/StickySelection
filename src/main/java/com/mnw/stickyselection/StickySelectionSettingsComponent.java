@@ -26,7 +26,6 @@ public class StickySelectionSettingsComponent {
 
     private JPanel panelColorScheme;
 
-    private List<Integer> deletedDataBeans = new ArrayList<>();
     private java.util.List<PaintGroupRow> paintGroupRows = new ArrayList<>();
 
 
@@ -98,8 +97,28 @@ public class StickySelectionSettingsComponent {
                 paintGroupRows.remove(paintGroupRow);
             }
         });
+        paintGroupRow.addUpClickListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final int i = paintGroupRows.indexOf(paintGroupRow);
+                paintGroupRow.setUpEnabled(i > 2);
+                if (i == 0) {
+                    return;
+                }
+                paintGroupRows.remove(paintGroupRow);
+                paintGroupRows.add(i - 1, paintGroupRow);
+                if (paintGroupRows.size() > 1) {
+                    paintGroupRows.get(1).setUpEnabled(true);
+                }
+                panelColorScheme.remove(paintGroupRow.getRootComponent());
+                panelColorScheme.add(paintGroupRow.getRootComponent(), i - 1);
+                panelColorScheme.updateUI();
+            }
+        });
         panelColorScheme.add(paintGroupRow.getRootComponent());
         paintGroupRows.add(paintGroupRow);
+        paintGroupRow.setUpEnabled(paintGroupRows.size() > 1);
+
     }
 
     public boolean isCycleThrough() {
