@@ -81,10 +81,9 @@
     <!-- done bug: can double store highlights -->
     <!-- done reorder group -->
     <!-- done save existing highlight when changing settings to "keep highlight" -->
-    <!-- TODO check on file load, how many paintGroups are saved -> notify if some are missing -->
+    <!-- done check on file load, how many paintGroups are saved -> notify if some are missing -->
     <!-- done bug: marker bar does not refresh -->
     <!-- done? bug: a highlight was not removed  -->
-    <!-- TODO bug: file save when only navigation happens  -->
 
 
     <change-notes><![CDATA[
@@ -191,7 +190,7 @@
                 displayName="Sticky Selection"
                 parentId="editor"
         />
-        <editorFactoryListener implementation="com.mnw.stickyselection.EditorFactoryListener" />
+        <editorFactoryListener implementation="com.mnw.stickyselection.StickySelectionEditorFactoryListener" />
         <projectService serviceImplementation="com.mnw.stickyselection.model.StoredHighlightsRepository"/>
         <postStartupActivity implementation="com.mnw.stickyselection.StickySelectionAppComponent" />
         <notificationGroup displayType="BALLOON"

@@ -28,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static com.mnw.stickyselection.infrastructure.RandomPaintGroupData.getRandomColor;
+
 public class StickySelectionEditorComponent implements Disposable {
 
     private static final boolean REMOVE_ALL_CARETS = true;
@@ -240,23 +242,45 @@ public class StickySelectionEditorComponent implements Disposable {
         return selectedMatchStart;
     }
 
-    public void loadHighlights(Map<Integer, EditorHighlightsForPaintGroup> editorHighlights) {
+    public void loadHighlights(Map<Integer, EditorHighlightsForPaintGroup> storedEditorHighlights) {
 
         final int documentLength = editor.getDocument().getTextLength();
-        for (Integer paintGroup : editorHighlights.keySet()) {
-            final List<HighlightOffset> highlightsForPaintGroup = editorHighlights.get(paintGroup);
+        for (Integer paintGroup : storedEditorHighlights.keySet()) {
+            final List<HighlightOffset> highlightsForPaintGroup = storedEditorHighlights.get(paintGroup);
             if (highlightsForPaintGroup == null) {
                 continue;
             }
 
             final ValuesRepository valuesRepository = ValuesRepositoryImpl.getInstance();
-            if (valuesRepository.getPaintGroupCount() - 1 < paintGroup) {
-                final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
-                // TODO: 28/11/2017 ask the user if it should be removed (and only remove it outside of the loop)
+            final int definedPaintGroupCount = valuesRepository.getPaintGroupCount();
+            int groupIdUsedToAdd = paintGroup;
+            if (definedPaintGroupCount - 1 < paintGroup) {
+                //final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
                 //projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
-                continue;
+                final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
+                final String name = file != null ? file.getName() : "(null)";
+                Notification notification = new Notification(
+                        "StickySelection warnings",
+                        "Saved paint groups exceed your values",
+                        "You have " + definedPaintGroupCount +
+                                " paint groups defined, but for the file " + name +
+                                " '" + paintGroup +
+                                "' is also used. New group is created.",
+                        NotificationType.INFORMATION);
+                Notifications.Bus.notify(notification);
+
+                ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
+                final PaintGroupDataBean paintGroupBean = savedValues.addNewPaintGroup();
+                paintGroupBean.setShortcut("");
+                paintGroupBean.setFrameNeeded(false);
+                paintGroupBean.setHighlightLayer(1000);
+                paintGroupBean.setMarkerNeeded(true);
+                paintGroupBean.setColor(getRandomColor());
+                groupIdUsedToAdd = savedValues.getPaintGroupCount() - 1;
+                paintGroups.add(new PaintGroup(paintGroupBean));
+
             }
-            PaintGroupDataBean paintGroupProperties = valuesRepository.getPaintGroupProperties(paintGroup);
+            PaintGroupDataBean paintGroupProperties = valuesRepository.getPaintGroupProperties(groupIdUsedToAdd);
 
             final TextAttributes textAttributes = createTextAttributes(paintGroupProperties);
 
@@ -265,7 +289,7 @@ public class StickySelectionEditorComponent implements Disposable {
                     continue;
                 }
                 addRangeHighlighter(
-                        paintGroup,
+                        groupIdUsedToAdd,
                         paintGroupProperties,
                         textAttributes,
                         editorHighlight.start,

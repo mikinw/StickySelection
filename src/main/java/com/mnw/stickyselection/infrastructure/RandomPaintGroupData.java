@@ -1,6 +1,7 @@
 package com.mnw.stickyselection.infrastructure;
 
 import com.mnw.stickyselection.model.PaintGroupDataBean;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.Date;
@@ -16,7 +17,7 @@ public class RandomPaintGroupData {
     }
 
     public static PaintGroupDataBean createBean() {
-        final Color hsbColor = Color.getHSBColor(random.nextFloat(), random.nextFloat(), random.nextFloat());
+        final Color hsbColor = getRandomColor();
         final PaintGroupDataBean paintGroupDataBean = new PaintGroupDataBean();
         paintGroupDataBean.setColor(hsbColor);
         paintGroupDataBean.setMarkerNeeded(true);
@@ -29,5 +30,10 @@ public class RandomPaintGroupData {
         paintGroupDataBean.setShortcut(shortcut);
 
         return paintGroupDataBean;
+    }
+
+    @NotNull
+    public static Color getRandomColor() {
+        return Color.getHSBColor(random.nextFloat(), random.nextFloat(), random.nextFloat());
     }
 }

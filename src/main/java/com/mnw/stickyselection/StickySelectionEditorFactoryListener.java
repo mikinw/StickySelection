@@ -1,7 +1,6 @@
 package com.mnw.stickyselection;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class EditorFactoryListener implements com.intellij.openapi.editor.event.EditorFactoryListener {
+public class StickySelectionEditorFactoryListener implements com.intellij.openapi.editor.event.EditorFactoryListener {
 
     @Override
     public void editorCreated(@NotNull EditorFactoryEvent editorFactoryEvent) {
@@ -40,11 +39,11 @@ public class EditorFactoryListener implements com.intellij.openapi.editor.event.
             }
             final String path = file.getPath();
 
-            final Map<Integer, EditorHighlightsForPaintGroup> editorHighlights = projectSettings
+            final Map<Integer, EditorHighlightsForPaintGroup> storedEditorHighlights = projectSettings
                     .getEditorHighlights(path);
 
 
-            editorHighlighter.loadHighlights(editorHighlights);
+            editorHighlighter.loadHighlights(storedEditorHighlights);
         } else {
             projectSettings.clear();
         }
