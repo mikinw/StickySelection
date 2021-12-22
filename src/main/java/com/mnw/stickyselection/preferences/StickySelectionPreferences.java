@@ -39,19 +39,16 @@ public class StickySelectionPreferences implements Configurable {
         ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
 //        System.out.println("isModified()");
         if (savedValues.getIsCycleThroughEnabled() != settingsComponent.isCycleThrough()) {
-//            refreshWarning.setVisible(false);
             return true;
         }
 
         if (savedValues.getPersistHighlights() != settingsComponent.isPersistHighlights()) {
-//            refreshWarning.setVisible(false);
             return true;
         }
 
         final List<PaintGroupDataBean> paintGroups = settingsComponent.getPaintGroups();
         final int paintGroupCount = savedValues.getPaintGroupCount();
         if (paintGroupCount != paintGroups.size()) {
-//            refreshWarning.setVisible(false);
             return true;
         }
 
@@ -65,7 +62,6 @@ public class StickySelectionPreferences implements Configurable {
 
 
             if (!paintGroupProperties.equals(dataBeanUi)) {
-//                refreshWarning.setVisible(false);
                 return true;
             }
         }
@@ -96,7 +92,7 @@ public class StickySelectionPreferences implements Configurable {
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
 
 
@@ -105,9 +101,7 @@ public class StickySelectionPreferences implements Configurable {
         savedValues.setIsCycleThroughEnabled(settingsComponent.isCycleThrough());
         savedValues.setPersistHighlights(settingsComponent.isPersistHighlights());
 
-//        refreshWarning.setVisible(true);
         final List<PaintGroupDataBean> paintGroups = settingsComponent.getPaintGroups();
-        final int storedPaintGroupCount = savedValues.getPaintGroupCount();
 
         final List<Integer> paintGroupIds = savedValues.getPaintGroupIds();
         savedValues.removeWithIds(paintGroupIds);
@@ -116,7 +110,6 @@ public class StickySelectionPreferences implements Configurable {
             final PaintGroupDataBean dataBeanUi = paintGroups.get(i);
 
             final PaintGroupDataBean paintGroupBean = savedValues.addNewPaintGroup();
-//                paintGroupRow.linkToDataBean(savedValues.getLast());
             paintGroupBean.setShortcut(dataBeanUi.getShortcut());
             paintGroupBean.setFrameNeeded(dataBeanUi.isFrameNeeded());
             paintGroupBean.setHighlightLayer(dataBeanUi.getHighlightLayer());
