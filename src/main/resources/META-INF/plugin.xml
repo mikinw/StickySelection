@@ -82,7 +82,9 @@
     <!-- done reorder group -->
     <!-- done save existing highlight when changing settings to "keep highlight" -->
     <!-- TODO check on file load, how many paintGroups are saved -> notify if some are missing -->
-    <!-- TODO bug: marker bar does not refresh -->
+    <!-- done bug: marker bar does not refresh -->
+    <!-- done? bug: a highlight was not removed  -->
+    <!-- TODO bug: file save when only navigation happens  -->
 
 
     <change-notes><![CDATA[

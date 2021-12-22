@@ -84,10 +84,11 @@ public class PaintGroup {
                         newTextAttributes,
                         HighlighterTargetArea.EXACT_RANGE);
                 if (paintGroupProperties.isMarkerNeeded()) {
-                    highlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
+                    rangeHighlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
                 }
                 newHighLighters.add(rangeHighlighter);
             }
+            highlighters.clear();
             highlighters.addAll(newHighLighters);
         }
 
