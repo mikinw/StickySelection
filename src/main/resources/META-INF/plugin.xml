@@ -80,8 +80,9 @@
     <!-- done bug: does not persist highlights on exit -->
     <!-- done bug: can double store highlights -->
     <!-- done reorder group -->
-    <!-- TODO save existing highlight when changing settings to "keep highlight" -->
+    <!-- done save existing highlight when changing settings to "keep highlight" -->
     <!-- TODO check on file load, how many paintGroups are saved -> notify if some are missing -->
+    <!-- TODO bug: marker bar does not refresh -->
 
 
     <change-notes><![CDATA[

@@ -27,6 +27,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class StickySelectionAppComponent implements StartupActivity, Disposable {
 
@@ -40,9 +41,9 @@ public class StickySelectionAppComponent implements StartupActivity, Disposable 
             @Override
             public void beforeAllDocumentsSaving() {
                 for (StickySelectionEditorComponent editorComponent : editors.values()) {
-                    editorComponent.persistHighlights();
+                    editorComponent.persistHighlights(false);
                 }
-                editors.values().forEach(StickySelectionEditorComponent::persistHighlights);
+                editors.values().forEach(stickySelectionEditorComponent -> stickySelectionEditorComponent.persistHighlights(false));
             }
 
             @Override
@@ -179,6 +180,10 @@ public class StickySelectionAppComponent implements StartupActivity, Disposable 
 
     public void editorCreated(final Editor editor, final StickySelectionEditorComponent editorHighlighter) {
         editors.put(editor, editorHighlighter);
+    }
+
+    public Stream<Map.Entry<Editor, StickySelectionEditorComponent>> editorIterator() {
+        return editors.entrySet().stream();
     }
 
     private interface InstantActionFactory {

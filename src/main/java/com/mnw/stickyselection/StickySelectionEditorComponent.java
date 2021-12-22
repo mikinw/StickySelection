@@ -467,8 +467,8 @@ public class StickySelectionEditorComponent implements Disposable {
         return ret;
     }
 
-    public void persistHighlights() {
-        if (documentModified) {
+    public void persistHighlights(final boolean force) {
+        if (documentModified || force) {
             final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
 
             final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
@@ -486,7 +486,7 @@ public class StickySelectionEditorComponent implements Disposable {
 
     public void persistHighlights(Document document) {
         if (document == editor.getDocument()) {
-            persistHighlights();
+            persistHighlights(false);
         }
     }
 

@@ -42,7 +42,17 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
     @Transient
     public void addOrUpdateEditorHighlights(PaintGroupHighlightMap editorHighlightsOfAllPaintGroups, String relativePath) {
         editorHighlights.remove(relativePath);
-        editorHighlights.put(relativePath, editorHighlightsOfAllPaintGroups);
+
+        final PaintGroupHighlightMap trimmedCopy = new PaintGroupHighlightMap();
+        editorHighlightsOfAllPaintGroups.getPaintGroups().forEach((index, paintGroup) -> {
+            if (!paintGroup.isEmpty()) {
+                trimmedCopy.put(index, paintGroup);
+            }
+        });
+
+        if (!trimmedCopy.isEmpty()) {
+            editorHighlights.put(relativePath, trimmedCopy);
+        }
     }
 
     @Transient

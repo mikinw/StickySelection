@@ -2,8 +2,8 @@ package com.mnw.stickyselection.preferences;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.mnw.stickyselection.StickySelectionAppComponent;
+import com.mnw.stickyselection.StickySelectionEditorComponent;
 import com.mnw.stickyselection.StickySelectionSettingsComponent;
 import com.mnw.stickyselection.model.PaintGroupDataBean;
 import com.mnw.stickyselection.model.ValuesRepository;
@@ -99,7 +99,8 @@ public class StickySelectionPreferences implements Configurable {
 
 //        System.out.println("apply()");
         savedValues.setIsCycleThroughEnabled(settingsComponent.isCycleThrough());
-        savedValues.setPersistHighlights(settingsComponent.isPersistHighlights());
+        final boolean persist = settingsComponent.isPersistHighlights();
+        savedValues.setPersistHighlights(persist);
 
         final List<PaintGroupDataBean> paintGroups = settingsComponent.getPaintGroups();
 
@@ -126,6 +127,18 @@ public class StickySelectionPreferences implements Configurable {
         applicationComponent.updateAllHighlighters();
 
         applicationComponent.updateRegisteredActions();
+
+        if (persist) {
+
+            applicationComponent.editorIterator().forEach(e2epg -> {
+                final StickySelectionEditorComponent paintGroup = e2epg.getValue();
+
+                paintGroup.persistHighlights(true);
+
+            });
+
+
+        }
     }
 
     @Override
