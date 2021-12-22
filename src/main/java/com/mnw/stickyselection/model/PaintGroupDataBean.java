@@ -63,7 +63,7 @@ public class PaintGroupDataBean {
     }
 
     private static String createColorString(Color color) {
-        return String.format("%d,%d,%d", color.getRed(), color.getGreen(), color.getBlue());
+        return String.format("%d,%d,%d,%d", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
 
@@ -74,11 +74,23 @@ public class PaintGroupDataBean {
     @SuppressWarnings("UseJBColor")
     private static Color decodeColorString(String color) {
         final String[] split = color.split(",");
-        return new Color(
-                Integer.decode(split[0]),
-                Integer.decode(split[1]),
-                Integer.decode(split[2])
-                );
+        if (split.length >= 4) {
+            return new Color(
+                    Integer.decode(split[0]),
+                    Integer.decode(split[1]),
+                    Integer.decode(split[2]),
+                    Integer.decode(split[3])
+            );
+        }
+        if (split.length == 3) {
+
+            return new Color(
+                    Integer.decode(split[0]),
+                    Integer.decode(split[1]),
+                    Integer.decode(split[2])
+            );
+        }
+        return Color.RED;
     }
 
     @Override
