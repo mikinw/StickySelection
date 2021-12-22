@@ -40,7 +40,7 @@ public abstract class ShowPopupAction extends StickyEditorAction {
             Notification notification = new Notification(
                     "StickySelection warnings",
                     "No Paint Group is defined",
-                    "Please open Settings | Other | Sticky Selection <br> and add at least one.",
+                    "Please open Settings | Editor | Sticky Selection <br> and add at least one.",
                     NotificationType.WARNING);
             Notifications.Bus.notify(notification);
         }

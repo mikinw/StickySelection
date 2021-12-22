@@ -11,6 +11,7 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.ColorIcon;
 import com.mnw.stickyselection.actions.ClearPaintGroupInstantAction;
@@ -172,7 +173,7 @@ public class StickySelectionAppComponent implements StartupActivity, Disposable 
             return;
         }
 
-        editorHighlighter.dispose();
+        Disposer.dispose(editorHighlighter);
 
     }
 
