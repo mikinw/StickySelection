@@ -34,9 +34,10 @@ public class PaintGroupRow {
     public PaintGroupDataBean getData() {
         final PaintGroupDataBean paintGroupDataBean = new PaintGroupDataBean();
 
+        final int layer = textFieldLayer.getText().isEmpty() ? 0 : Integer.parseInt(textFieldLayer.getText());
         paintGroupDataBean.setShortcut(textFieldShortcut.getText());
         paintGroupDataBean.setFrameNeeded(checkBoxFrame.isSelected());
-        paintGroupDataBean.setHighlightLayer(Integer.parseInt(textFieldLayer.getText()));
+        paintGroupDataBean.setHighlightLayer(layer);
         paintGroupDataBean.setMarkerNeeded(checkBoxMarker.isSelected());
         paintGroupDataBean.setColor(colorButton.getColor());
 
