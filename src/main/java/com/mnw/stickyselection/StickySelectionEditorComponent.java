@@ -231,13 +231,9 @@ public class StickySelectionEditorComponent implements Disposable {
     private void setUndoEnabled(boolean enabled) {
         DefaultActionGroup editorMenu = (DefaultActionGroup) ActionManager.getInstance().getAction("StickyHighlight.Menu");
         final AnAction[] childActionsOrStubs = editorMenu.getChildActionsOrStubs();
-        for(int i = 0; i < childActionsOrStubs.length; i++) {
-            AnAction childActionsOrStub = childActionsOrStubs[i];
-
-            if (childActionsOrStub instanceof UndoLastPaintAction) {
-                childActionsOrStub.getTemplatePresentation().setEnabled(enabled);
-            }
-        }
+        Arrays.stream(childActionsOrStubs)
+                .filter(childActionsOrStub -> childActionsOrStub instanceof UndoLastPaintAction)
+                .forEach(childActionsOrStub -> childActionsOrStub.getTemplatePresentation().setEnabled(enabled));
     }
 
     private ArrayList<Integer> getSelectionMatchesStart(String wholeText, String selectedText) {
@@ -585,11 +581,20 @@ public class StickySelectionEditorComponent implements Disposable {
 
     private class SetModifiedFlag implements DocumentListener {
         @Override
-        public void beforeDocumentChange(@NotNull DocumentEvent event) {}
+        public void beforeDocumentChange(@NotNull DocumentEvent event) { }
 
         @Override
         public void documentChanged(@NotNull DocumentEvent event) {
             documentModified = true;
+            if (ValuesRepositoryImpl.getInstance().getPersistHighlights()) {
+                final Project project = editor.getProject();
+                if (project == null) {
+                    return;
+                }
+                final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
+                projectSettings.addOrUpdateEditorHighlights(highlightsToMap(), filePath);
+
+            }
         }
     }
 }
