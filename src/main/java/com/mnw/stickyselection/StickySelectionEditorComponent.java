@@ -40,6 +40,10 @@ public class StickySelectionEditorComponent implements Disposable {
     private final List<RangeHighlighter> undoList = new ArrayList<>();
 
     private final Map<RangeHighlighter, Integer> highlighterPaintGroupMap = new HashMap<>();
+    private final ClearUndoFieldsWhenChanged clearUndoFieldsWhenChanged;
+    private final SetModifiedFlag setModifiedFlag;
+    private final CaretListener caretListener;
+    private final MarkupModelListener markupModelListener;
     private int lastPaintedGroup;
 
     private int navigationGroup = -1;
@@ -59,9 +63,9 @@ public class StickySelectionEditorComponent implements Disposable {
             paintGroups.add(new PaintGroup(savedValues.getPaintGroupProperties(i)));
         }
 
-        editor.getDocument().addDocumentListener(new ClearUndoFieldsWhenChanged());
-        editor.getDocument().addDocumentListener(new SetModifiedFlag());
-        editor.getCaretModel().addCaretListener(new CaretListener() {
+        clearUndoFieldsWhenChanged = new ClearUndoFieldsWhenChanged();
+        setModifiedFlag = new SetModifiedFlag();
+        caretListener = new CaretListener() {
             @Override
             public void caretPositionChanged(CaretEvent caretEvent) {
                 navigationGroup = -1;
@@ -73,27 +77,35 @@ public class StickySelectionEditorComponent implements Disposable {
             @Override
             public void caretRemoved(CaretEvent caretEvent) { }
 
-        });
-        ((MarkupModelEx) editor.getMarkupModel()).addMarkupModelListener(this, new MarkupModelListener() {
+        };
+        markupModelListener = new MarkupModelListener() {
             @Override
-            public void afterAdded(@NotNull RangeHighlighterEx rangeHighlighterEx) { }
+            public void afterAdded(@NotNull RangeHighlighterEx highlighter) { }
 
             @Override
-            public void beforeRemoved(@NotNull RangeHighlighterEx rangeHighlighterEx) {
-                final Integer paintGroupIndex = highlighterPaintGroupMap.remove(rangeHighlighterEx);
-                if (paintGroupIndex == null) {return;}
+            public void beforeRemoved(@NotNull RangeHighlighterEx highlighter) {
+                final Integer paintGroupIndex = highlighterPaintGroupMap.remove(highlighter);
+                if (paintGroupIndex == null) { return; }
                 final PaintGroup paintGroup = paintGroups.get(paintGroupIndex);
-                if (paintGroup == null) {return;}
-                paintGroup.remove(rangeHighlighterEx);
+                if (paintGroup == null) { return; }
+                paintGroup.remove(highlighter);
             }
 
-        });
+        };
+        editor.getDocument().addDocumentListener(clearUndoFieldsWhenChanged);
+        editor.getDocument().addDocumentListener(setModifiedFlag);
+        editor.getCaretModel().addCaretListener(caretListener);
+        ((MarkupModelEx) editor.getMarkupModel()).addMarkupModelListener(this, markupModelListener);
 
     }
 
     @Override
     public void dispose() {
         clearState();
+        editor.getDocument().removeDocumentListener(clearUndoFieldsWhenChanged);
+        editor.getDocument().removeDocumentListener(setModifiedFlag);
+        editor.getCaretModel().removeCaretListener(caretListener);
+
 //        editor = null;
     }
 
@@ -535,6 +547,7 @@ public class StickySelectionEditorComponent implements Disposable {
         private int paintGroup;
 
         public CurrentBest(final int currentClosestDistance, final int currentBestCaretOffset) {
+            System.out.println("CurrentBest created");
             this.currentClosestDistance = currentClosestDistance;
             this.currentBestCaretOffset = currentBestCaretOffset;
         }
