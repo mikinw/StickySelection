@@ -68,7 +68,7 @@
     <!-- done prev/next refactor, -->
     <!-- done settings -> editor, -->
     <!-- done add actions dynamically -->
-    <!-- TODO performance improvement could be to replace arrayList of RangeHighlighters to SortedTree of RangeHighlighters -->
+    <!-- TODO performance improvement could be to replace arrayList of RangeHighlighters to SortedTree of RangeHighlighters -> but unfortunatelly the RangeHighligher is mutable and can change wich may disturb the sort -->
     <!-- done disable undo if it's not available -->
     <!-- done select paint group if only one exists -->
     <!-- done multi caret selection does not search for text matches, only converts selections to paint -->
@@ -84,6 +84,8 @@
     <!-- done check on file load, how many paintGroups are saved -> notify if some are missing -->
     <!-- done bug: marker bar does not refresh -->
     <!-- done? bug: a highlight was not removed  -->
+    <!-- done bug: when selecting and overwriting (eg. with paste) a highlighted text, the range remains saved (reloading the file will show it)  -->
+    <!-- done remove individual highlights (instead clearing the group) -->
 
 
     <change-notes><![CDATA[
@@ -152,13 +154,21 @@
         </action>
 
         <action id="com.mnw.stickyselection.actions.PaintSelectionPopupAction" class="com.mnw.stickyselection.actions.PaintSelectionPopupAction"
-                text="Paint" description="Sticky Paint current selection">
+                text="Paint All Similar" description="Sticky Paint current selection and all similar in the whole text">
             <keyboard-shortcut keymap="$default" first-keystroke="control alt F9"/>
+        </action>
+
+        <action id="com.mnw.stickyselection.actions.PaintUniquePopupAction" class="com.mnw.stickyselection.actions.PaintUniquePopupAction"
+                text="Paint Only This" description="Sticky Paint current selection only">
         </action>
 
         <action id="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction" class="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction"
                 text="Clear" description="Clear specific Paint Group">
             <keyboard-shortcut keymap="$default" first-keystroke="control alt F10"  second-keystroke="F9"/>
+        </action>
+
+        <action id="com.mnw.stickyselection.actions.ClearUniquePopupAction" class="com.mnw.stickyselection.actions.ClearUniquePopupAction"
+                text="Clear Paint at Caret" description="Remove selection at caret">
         </action>
 
         <action id="com.mnw.stickyselection.actions.NavigateToAnyNextPaint" class="com.mnw.stickyselection.actions.NavigateToAnyNextPaint"
@@ -173,7 +183,9 @@
             <separator/>
             <group id="StickyHighlight.Menu" text="StickyHighlight" popup="true">
                 <reference id="com.mnw.stickyselection.actions.PaintSelectionPopupAction" />
+                <reference id="com.mnw.stickyselection.actions.PaintUniquePopupAction" />
                 <reference id="com.mnw.stickyselection.actions.ClearPaintGroupPopupAction" />
+                <reference id="com.mnw.stickyselection.actions.ClearUniquePopupAction" />
                 <reference id="com.mnw.stickyselection.actions.ConvertPaintGroupToSelection" />
                 <reference id="com.mnw.stickyselection.actions.UndoLastPaintAction" />
                 <reference id="com.mnw.stickyselection.actions.NavigateToPreviousPaintInGroup" />

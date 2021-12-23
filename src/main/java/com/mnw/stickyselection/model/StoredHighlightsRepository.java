@@ -124,4 +124,37 @@ public class StoredHighlightsRepository implements PersistentStateComponent<Stor
         editorHighlights.clear();
 
     }
+
+    @Transient
+    public void removeOneHighlight(final String filePath, final int groupNumber, final HighlightOffset rangeHighlighter) {
+        if (!ValuesRepositoryImpl.getInstance().getPersistHighlights()) {
+            return;
+        }
+        if (!editorHighlights.containsKey(filePath)) {
+            return;
+        }
+        final Map<Integer, EditorHighlightsForPaintGroup> paintGroupMap = editorHighlights.get(filePath);
+        if (!paintGroupMap.containsKey(groupNumber)) {
+            return;
+        }
+
+
+        final EditorHighlightsForPaintGroup highlightOffsets = paintGroupMap.get(groupNumber);
+        if (highlightOffsets.isEmpty()) {
+            return;
+        }
+
+        final EditorHighlightsForPaintGroup newList = new EditorHighlightsForPaintGroup();
+        highlightOffsets.getHighlights().forEach(highlightOffset -> {
+            if (highlightOffset.start != rangeHighlighter.start || highlightOffset.end != rangeHighlighter.end) {
+                newList.add(highlightOffset);
+            }
+        });
+
+
+
+        paintGroupMap.remove(groupNumber);
+        paintGroupMap.put(groupNumber, newList);
+
+    }
 }

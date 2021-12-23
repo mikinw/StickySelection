@@ -16,14 +16,14 @@ import java.util.Map;
 public class StickySelectionEditorFactoryListener implements com.intellij.openapi.editor.event.EditorFactoryListener {
 
     @Override
-    public void editorCreated(@NotNull EditorFactoryEvent editorFactoryEvent) {
-        final Editor editor = editorFactoryEvent.getEditor();
+    public void editorCreated(@NotNull EditorFactoryEvent event) {
+        final Editor editor = event.getEditor();
 
         StickySelectionAppComponent appComponent = ApplicationManager.getApplication().getComponent(StickySelectionAppComponent.class);
 
         StickySelectionEditorComponent editorHighlighter = new StickySelectionEditorComponent(editor);
 
-        appComponent.editorCreated(editorFactoryEvent.getEditor(), editorHighlighter);
+        appComponent.editorCreated(event.getEditor(), editorHighlighter);
 
         final Project project = editor.getProject();
         if (project == null) {

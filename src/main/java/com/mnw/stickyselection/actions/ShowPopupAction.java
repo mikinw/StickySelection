@@ -5,11 +5,9 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.mnw.stickyselection.infrastructure.PaintGroupListPopupStep;
-import com.mnw.stickyselection.model.ValuesRepository;
 import com.mnw.stickyselection.model.ValuesRepositoryImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,12 +28,12 @@ public abstract class ShowPopupAction extends StickyEditorAction {
     @Override
     protected void actionImpl() {
         final int paintGroupCount = ValuesRepositoryImpl.getInstance().getPaintGroupCount();
-        if (paintGroupCount > 1) {
+        if (canPerformAutomatically()) {
+            autoPerformPopupAction();
+        } else if (paintGroupCount > 1) {
             JBPopupFactory.getInstance()
                     .createListPopup(createListStep())
                     .showInBestPositionFor(editor);
-        } else if (paintGroupCount == 1) {
-            autoPerformPopupAction();
         } else {
             Notification notification = new Notification(
                     "StickySelection warnings",
@@ -51,4 +49,9 @@ public abstract class ShowPopupAction extends StickyEditorAction {
 
     @NotNull
     protected abstract PaintGroupListPopupStep createListStep();
+
+    protected boolean canPerformAutomatically() {
+        final int paintGroupCount = ValuesRepositoryImpl.getInstance().getPaintGroupCount();
+        return paintGroupCount == 1;
+    }
 }

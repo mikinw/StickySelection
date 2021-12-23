@@ -27,6 +27,7 @@ import com.mnw.stickyselection.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.mnw.stickyselection.infrastructure.RandomPaintGroupData.getRandomColor;
 
@@ -310,6 +311,78 @@ public class StickySelectionEditorComponent implements Disposable {
         clearUndoFields();
     }
 
+    public boolean isAtMostOneGroupAtCaret() {
+        final Set<PaintGroup> count = new HashSet<>();
+        final List<Integer> caretPositions = editor.getCaretModel()
+                .getCaretsAndSelections()
+                .stream()
+                .map(CaretState::getCaretPosition)
+                .filter(Objects::nonNull)
+                .map(editor::logicalPositionToOffset)
+                .collect(Collectors.toList());
+
+        for (PaintGroup paintGroup : paintGroups) {
+            for (Integer caretPosition : caretPositions) {
+
+                final boolean present = paintGroup.highlighters.stream()
+                        .anyMatch(rangeHighlighter ->
+                                rangeHighlighter.getStartOffset() <= caretPosition && rangeHighlighter.getEndOffset() >= caretPosition
+                        );
+
+                if (present) {
+                    count.add(paintGroup);
+                    break;
+                }
+            }
+
+        }
+
+        return count.size() <= 1;
+
+    }
+
+    public void clearAtCaretAllGroups() {
+        for (int i = 0; i < paintGroups.size(); i++) {
+            clearAtCaret(i, paintGroups.get(i));
+        }
+    }
+
+
+    public void clearAtCaret(final int groupNumber) {
+        final PaintGroup paintGroup = paintGroups.get(groupNumber);
+        clearAtCaret(groupNumber, paintGroup);
+    }
+
+    private void clearAtCaret(final int groupNumber, final PaintGroup paintGroup) {
+        final List<CaretState> caretsAndSelections = editor.getCaretModel().getCaretsAndSelections();
+
+        for (CaretState caretsAndSelection : caretsAndSelections) {
+            final LogicalPosition caretPosition = caretsAndSelection.getCaretPosition();
+            if (caretPosition == null) {
+                continue;
+            }
+            final int caretOffset = editor.logicalPositionToOffset(caretPosition);
+
+
+            final List<RangeHighlighter> removable = paintGroup.highlighters.stream().filter(rangeHighlighter ->
+                    rangeHighlighter.getStartOffset() <= caretOffset && rangeHighlighter.getEndOffset() >= caretOffset
+            ).collect(Collectors.toList());
+
+            removable.forEach(rangeHighlighter -> {
+                final HighlightOffset highlightOffsetToRemove = new HighlightOffset(rangeHighlighter.getStartOffset(), rangeHighlighter.getEndOffset());
+                undoList.remove(rangeHighlighter);
+                editor.getMarkupModel().removeHighlighter(rangeHighlighter);
+                final Project project = editor.getProject();
+                if (project == null) {
+                    return;
+                }
+                final StoredHighlightsRepository projectSettings = editor.getProject().getService(StoredHighlightsRepository.class);
+                projectSettings.removeOneHighlight(filePath, groupNumber, highlightOffsetToRemove);
+            });
+        }
+
+    }
+
 
     public void clearPaintGroup(int paintGroup) {
         paintGroups.get(paintGroup).clear(editor.getMarkupModel());
@@ -543,7 +616,6 @@ public class StickySelectionEditorComponent implements Disposable {
         private int paintGroup;
 
         public CurrentBest(final int currentClosestDistance, final int currentBestCaretOffset) {
-            System.out.println("CurrentBest created");
             this.currentClosestDistance = currentClosestDistance;
             this.currentBestCaretOffset = currentBestCaretOffset;
         }
