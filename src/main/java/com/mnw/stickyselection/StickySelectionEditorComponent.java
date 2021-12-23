@@ -35,7 +35,6 @@ public class StickySelectionEditorComponent implements Disposable {
     private static final boolean REMOVE_ALL_CARETS = true;
     private final Editor editor;
     private final String filePath;
-    private final Project project;
     private final List<PaintGroup> paintGroups = new ArrayList<>();
 
     private final List<RangeHighlighter> undoList = new ArrayList<>();
@@ -52,7 +51,6 @@ public class StickySelectionEditorComponent implements Disposable {
 
         final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
         filePath = file != null ? file.getPath() : null;
-        project = editor.getProject();
 
 
         ValuesRepository savedValues = ValuesRepositoryImpl.getInstance();
@@ -207,6 +205,10 @@ public class StickySelectionEditorComponent implements Disposable {
         highlighterPaintGroupMap.put(rangeHighlighter, paintGroup);
 
         if (persist) {
+            final Project project = editor.getProject();
+            if (project == null) {
+                return;
+            }
             final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
             projectSettings.addOneHighlight(filePath,
                     paintGroup,
@@ -304,12 +306,16 @@ public class StickySelectionEditorComponent implements Disposable {
 
     public void clearPaintGroup(int paintGroup) {
         paintGroups.get(paintGroup).clear(editor.getMarkupModel());
-        final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
-        projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
-
+        final Project project = editor.getProject();
+        if (project == null) {
+            return;
+        }
         if (paintGroup == lastPaintedGroup) {
             clearUndoFields();
         }
+        final StoredHighlightsRepository projectSettings = editor.getProject().getService(StoredHighlightsRepository.class);
+        projectSettings.removeHighlightsOfPaintGroup(filePath, paintGroup);
+
     }
 
     public void clearAll() {
@@ -363,9 +369,13 @@ public class StickySelectionEditorComponent implements Disposable {
             paintGroups.get(lastPaintedGroup).remove(rangeHighlighter);
             editor.getMarkupModel().removeHighlighter(rangeHighlighter);
         }
-        final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
-        projectSettings.removeLastNOfPaintGroup(filePath, lastPaintedGroup, undoList.size());
         clearUndoFields();
+        final Project project = editor.getProject();
+        if (project == null) {
+            return;
+        }
+        final StoredHighlightsRepository projectSettings = editor.getProject().getService(StoredHighlightsRepository.class);
+        projectSettings.removeLastNOfPaintGroup(filePath, lastPaintedGroup, undoList.size());
     }
 
     public void convertPaintGroupToSelection(int i) {
@@ -493,7 +503,11 @@ public class StickySelectionEditorComponent implements Disposable {
 
     public void persistHighlights(final boolean force) {
         if (documentModified || force) {
-            final StoredHighlightsRepository projectSettings = project.getService(StoredHighlightsRepository.class);
+            final Project project = editor.getProject();
+            if (project == null) {
+                return;
+            }
+            final StoredHighlightsRepository projectSettings = editor.getProject().getService(StoredHighlightsRepository.class);
 
             final VirtualFile file = FileDocumentManager.getInstance().getFile(editor.getDocument());
             if (file == null) {
