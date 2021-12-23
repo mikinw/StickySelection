@@ -117,10 +117,10 @@ public class StickySelectionEditorComponent implements Disposable {
     }
 
 
-    public void paintSelection(int paintGroup) {
+    public void paintSelection(int paintGroup, final boolean paintUnique) {
         PaintGroupDataBean paintGroupProperties = ValuesRepositoryImpl.getInstance().getPaintGroupProperties(paintGroup);
 
-        if (editor.getCaretModel().getCaretCount() > 1) {
+        if (editor.getCaretModel().getCaretCount() > 1 || paintUnique) {
             final List<CaretState> caretsAndSelections = editor.getCaretModel().getCaretsAndSelections();
             final TextAttributes textAttributes = createTextAttributes(paintGroupProperties);
 
@@ -534,6 +534,7 @@ public class StickySelectionEditorComponent implements Disposable {
             persistHighlights(false);
         }
     }
+
 
     public static class CurrentBest {
         private int currentClosestDistance;

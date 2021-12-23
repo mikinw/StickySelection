@@ -4,17 +4,18 @@ import com.mnw.stickyselection.infrastructure.PaintGroupListPopupStep;
 import com.mnw.stickyselection.infrastructure.PerformStickyPaintRunnable;
 import org.jetbrains.annotations.NotNull;
 
-public class PaintSelectionPopupAction extends ShowPopupAction {
+public class PaintUniquePopupAction extends ShowPopupAction {
+
     @Override
     protected void autoPerformPopupAction() {
-        stickySelectionEditorComponent.paintSelection(0, false);
+        stickySelectionEditorComponent.paintSelection(0, true);
     }
 
     @NotNull
     @Override
     protected PaintGroupListPopupStep createListStep() {
         return new PaintGroupListPopupStep(
-                "Paint selection and all similar",
-                PerformStickyPaintRunnable.getFactory(stickySelectionEditorComponent, false));
+                "Paint selection only",
+                PerformStickyPaintRunnable.getFactory(stickySelectionEditorComponent, true));
     }
 }

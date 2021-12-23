@@ -14,6 +14,6 @@ public class PaintSelectionInstantAction extends StickyEditorAction {
 
     @Override
     protected void actionImpl() {
-        stickySelectionEditorComponent.paintSelection(paintGroup);
+        stickySelectionEditorComponent.paintSelection(paintGroup, false);
     }
 }
