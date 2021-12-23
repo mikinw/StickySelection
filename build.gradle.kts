@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.mnw.stickyselection"
-version = "3.0-SNAPSHOT"
+version = "3.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -30,7 +30,10 @@ tasks {
       v2.3 fixed: caret can jump to deleted highlight, fixed: preferences page does not respond to Paint Group changes, fixed: exception after "paint, convert, paint, undo" <br>
       v2.4 fixed: exception when changing color, fixed: lingering highlights when changing color <br>
       v3.0 refactored components that were using deprecated api, increased min version, migrated to gradle, fixed: layer is not saved, fixed: highlights
-      are not updated when changing settings, fixed: exception when deleting shortcut or layer field in settings, alpha channel is saved with the color, fixed: exception when using next/prev  <br>        """.trimIndent())
+      are not updated when changing settings, fixed: exception when deleting shortcut or layer field in settings, alpha channel is saved with the color, fixed: exception when using next/prev  <br>        
+      v3.1 option to paint only the selected text, but not all the similar; option to clear highlight at caret only, but not the whole group; fixed: memory leak, fixed: saved highlights are not updated when document changes <br>
+      """.trimIndent())
+
     }
 }
 tasks.getByName<Test>("test") {

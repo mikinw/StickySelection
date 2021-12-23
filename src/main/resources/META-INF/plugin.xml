@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.mnw.stickyselection</id>
     <name>Sticky Selection</name>
-    <version>3.0</version>
+    <version>3.1</version>
     <vendor email="mikinw.development@gmail.com" url="https://github.com/mikinw/StickySelection">MikiNW</vendor>
 
     <description><![CDATA[
@@ -40,7 +40,8 @@
       shortcuts)>
       <ul>
       <li>Press <em>Ctrl + Alt + F9</em> to paint a selection (showing popup for selecting Paint Group). If
-      nothing is selected, then the plugin tries to select automatically the word or block under the caret.
+      nothing is selected, then the plugin tries to select automatically the word or block under the caret. It also selects all
+      similar text in the whole document (though there is a separate action which does not select all occurrences).
       <li>Press <em>Ctrl + Alt + F10</em> than <em>F9</em> to clear a selection (showing popup for selecting Paint Group).
       <li>Press <em>Ctrl + Alt + F10</em> than <em>F10</em> to clear all selections.
       <li>Press <em>Ctrl + Alt + F8</em> to undo last selection.
@@ -98,7 +99,9 @@
       v2.4 fixed: exception when changing color, fixed: lingering highlights when changing color <br>
       v3.0 refactored components that were using deprecated api, increased min version, migrated to gradle, fixed: layer is not saved, fixed: highlights
       are not updated when changing settings, fixed: exception when deleting shortcut or layer field in settings, alpha channel is saved with the color, fixed: exception when using next/prev  <br>
-      Note! If you have set paint groups, please manually check StickySelection.xml in your <Idea user dir>/config/options, because some those values are not reachable by the new version.
+      Note! If you have set paint groups, please manually check StickySelection.xml in your <Idea user dir>/config/options, because some those values are not reachable by the new version. <br>
+      v3.1 option to paint only the selected text, but not all the similar; option to clear highlight at caret only, but not the whole group; fixed: memory leak, fixed: saved highlights are not updated when document changes <br>
+
       ]]>
     </change-notes>
 
