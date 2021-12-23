@@ -206,11 +206,10 @@ public class StickySelectionEditorComponent implements Disposable {
             rangeHighlighter.setErrorStripeMarkColor(paintGroupProperties.getColor());
         }
 
-        // TODO: 2017. 10. 17. don't add the same (start, end, paintgroup) twice
-
-        //if (paintGroups[paintGroup].has(rangeHighlighter)) {
-        //    editor.getMarkupModel().removeHighlighter(rangeHighlighter);
-        //} else {
+        // don't add the same (start, end, paintgroup) twice
+        if (paintGroups.get(paintGroup).contains(rangeHighlighter)) {
+            return;
+        }
 
         undoList.add(rangeHighlighter);
         paintGroups.get(paintGroup).add(rangeHighlighter);

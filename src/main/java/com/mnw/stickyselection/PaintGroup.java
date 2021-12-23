@@ -37,11 +37,10 @@ public class PaintGroup {
         }
     }*/
 
-    public boolean has(RangeHighlighter rangeHighlighter) {
-        //for (RangeHighlighter highlighter : highlighters) {
-        //    if (highlighter.getStartOffset() == rangeHighlighter.getStartOffset() && highlighter.getEndOffset() == rangeHighlighter.getEndOffset() && highlighter.get)
-        //}
-        return false;
+    public boolean contains(RangeHighlighter rangeHighlighter) {
+        return highlighters.stream().anyMatch(rh ->
+            rh.getStartOffset() == rangeHighlighter.getStartOffset() && rh.getEndOffset() == rangeHighlighter.getEndOffset()
+        );
     }
 
     boolean hasSameDataBean(PaintGroupDataBean paintGroupProperties) {
@@ -96,7 +95,6 @@ public class PaintGroup {
 
     public void remove(RangeHighlighter rangeHighlighter) {
         // TODO: 2017. 11. 18. this could be faster with binary search
-
         highlighters.remove(rangeHighlighter);
 
     }
